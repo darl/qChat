@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="online">media/ico/status.ico</file>
+        <file alias="away">media/ico/status-away.ico</file>
+        <file alias="busy">media/ico/status-busy.ico</file>
+        <file alias="offline">media/ico/status-offline.ico</file>
+    </qresource>
+</RCC>
