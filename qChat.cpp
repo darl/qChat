@@ -1,4 +1,4 @@
-#include "qChat.h"
+п»ї#include "qChat.h"
 
 quint16 port = 49675;                                   //default port
 QHostAddress broadcast(QObject::tr("172.18.255.255"));  //broadcasting mask
@@ -18,10 +18,10 @@ bool showOfflineUsers = false;
 
 void sendMessage(QString msg)
 {
-    //запрет посылки html тегов
+    //Р·Р°РїСЂРµС‚ РїРѕСЃС‹Р»РєРё html С‚РµРіРѕРІ
     if(!adminMode) msg.replace('<',"&lt;");
 
-    //распознование ссылок
+    //СЂР°СЃРїРѕР·РЅРѕРІР°РЅРёРµ СЃСЃС‹Р»РѕРє
     msg.replace(QRegExp("(^|[\\n ])([\\w]*)((ht|f)tp(s?)://[\\w]+[^ \\\"\\n\\r\\t<]*)"),"\\1\\2<a href=\"\\3\">\\3</a>");
     msg.replace(QRegExp("(^|[\\n ])([\\w]*)((www|ftp)\\.[^ \\,\\\"\\t\\n\\r<]*)"),"\\1\\2<a href=\"http://\\3\">\\3</a>");
     msg.replace(QRegExp("(^|[\\n ])([a-z0-9&\\-_\\.]+)@([\\w\\-]+\\.([\\w\\-\\.]+)+)"),"\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>");

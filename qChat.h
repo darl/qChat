@@ -8,23 +8,9 @@
 #include <QUdpSocket>
 #include <QByteArray>
 
+#include "qTypes.h"
 
-enum messageType{
-    mtMessage,
-    mtOnlinePing,
-    mtWhoRequest,
-    mtOnlineWarning,
-    mtOfflineWarning,
-    mtSystemMessage
-};
 
-enum userStatus
-{
-    usOnline,
-    usAway,
-    usBusy,
-    usOffline
-};
 
 extern QHostAddress broadcast;
 extern quint16 port;

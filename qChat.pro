@@ -13,15 +13,21 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
         qChat.cpp \
-        qUserList.cpp
+        qUserList.cpp \
+        qConfig.cpp
 
 HEADERS += mainwindow.h \
         qChat.h \
-        qUserList.h
+        qUserList.h \
+        qConfig.h \
+        qTypes.h
 
 RESOURCES += \
-    res.qrc
+        res.qrc
 
 win32 {
 	RC_FILE = ico.rc
 }
+
+FORMS += \
+        qconfig.ui
