@@ -8,8 +8,6 @@
 #include <QUdpSocket>
 #include <QByteArray>
 
-class qUser;
-
 
 enum messageType{
     mtMessage,
@@ -28,15 +26,13 @@ enum userStatus
     usOffline
 };
 
-extern quint16 port;
 extern QHostAddress broadcast;
+extern quint16 port;
 
 extern QString nick;
 extern userStatus status;
 
 extern QUdpSocket* globalSocket;
-
-//extern QStandardItemModel onlineUserModel;
 
 extern QString statusIcons[];
 

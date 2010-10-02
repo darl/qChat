@@ -8,9 +8,6 @@ userStatus status = usOnline;
 
 QUdpSocket* globalSocket;
 
-
-//QStandardItemModel onlineUserModel;
-
 QString statusIcons[] = {":/online",":/away",":/busy",":/offline"};
 
 bool invisibleMode = false;
