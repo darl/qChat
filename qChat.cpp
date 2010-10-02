@@ -1,25 +1,15 @@
-﻿#include "qChat.h"
+#include "qChat.h"
 
-quint16 port = 49675;                                   //default port
-QHostAddress broadcast(QObject::tr("172.18.255.255"));  //broadcasting mask
-
-QString nick = QHostInfo::localHostName();                     //default Nickname
-userStatus status = usOnline;
 
 QUdpSocket* globalSocket;
 
 QString statusIcons[] = {":/online",":/away",":/busy",":/offline"};
 
-bool invisibleMode = false;
-bool adminMode = false;
-bool showOfflineUsers = false;
-
-
 
 void sendMessage(QString msg)
 {
     //запрет посылки html тегов
-    if(!adminMode) msg.replace('<',"&lt;");
+    if(!htmlTags) msg.replace('<',"&lt;");
 
     //распознование ссылок
     msg.replace(QRegExp("(^|[\\n ])([\\w]*)((ht|f)tp(s?)://[\\w]+[^ \\\"\\n\\r\\t<]*)"),"\\1\\2<a href=\"\\3\">\\3</a>");

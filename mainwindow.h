@@ -1,23 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui/QMainWindow>
-#include <QTextBrowser>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QDockWidget>
-#include <QTime>
-#include <QtNetwork/QUdpSocket>
-#include <QToolBar>
-#include <QScrollBar>
-#include <QListView>
-#include <QSplitter>
-#include <QStandardItemModel>
-
 #include "qChat.h"
 #include "qUserList.h"
+#include "qConfig.h"
+#include "qTypes.h"
 
 
 class MainWindow : public QMainWindow

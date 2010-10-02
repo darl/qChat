@@ -1,7 +1,18 @@
 #ifndef QCONFIG_H
 #define QCONFIG_H
 
-#include <QDialog>
+#include "qTypes.h"
+
+
+extern QHostAddress broadcast;
+extern quint16 port;
+
+extern QString nick;
+extern userStatus status;
+
+extern bool invisibleMode;
+extern bool htmlTags;
+extern bool showOfflineUsers;
 
 namespace Ui {
     class qconfig;

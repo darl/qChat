@@ -27,7 +27,8 @@ void MainWindow::insertMessage(QString msg, bool insertTime, QString nick, QHost
 
 void MainWindow::sendClick()
 {
-    sendMessage(msgLine->text());
+    if(!msgLine->text().isEmpty())
+        sendMessage(msgLine->text());
 
     msgLine->clear();
     msgLine->setFocus();
@@ -86,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
     chatArea->setOpenLinks(false);
 
     msgLine = new QLineEdit(this);
-    msgLine->setPlaceholderText(tr("Message"));
+    msgLine->setPlaceholderText(tr("message"));
 
     sendButton = new QPushButton(tr("send"));
 

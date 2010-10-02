@@ -1,18 +1,8 @@
 #ifndef QUSERLIST_H
 #define QUSERLIST_H
 
-#include <QAbstractListModel>
-#include <QtNetwork>
 #include "qChat.h"
-
-
-struct qUser
-{
-    QHostAddress address;
-    QString nick;
-    QDateTime lastCheck;
-    userStatus status;
-};
+#include "qTypes.h"
 
 
 class QUserListModel : public QAbstractListModel
