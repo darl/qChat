@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings( QTextCodec::codecForName("cp1251"));
     QTextCodec::setCodecForLocale( QTextCodec::codecForName("cp1251"));
     MainWindow w;
+    configDialog = new qConfig(&w);
     w.show();
 
     return a.exec();

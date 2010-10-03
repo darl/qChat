@@ -22,6 +22,9 @@ private slots:
     void sendClick();
     void sendPing();
     void processData();
+    void refreshClick();
+    void configClick();
+    void aboutClick();
 
 protected:
     void closeEvent(QCloseEvent *event);

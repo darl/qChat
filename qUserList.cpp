@@ -67,6 +67,8 @@ void QUserListModel::updateUser(QHostAddress addr, QString nick, userStatus us)
     userList[addr.toString()] = user;
     if(adding)
         endInsertRows();
+    else
+        emit dataChanged(QModelIndex(),QModelIndex());
 }
 
 void QUserListModel::removeUser(QHostAddress addr)

@@ -39,6 +39,23 @@ void MainWindow::sendPing()
     sendOnlinePing();
 }
 
+void MainWindow::refreshClick()
+{
+
+}
+
+void MainWindow::configClick()
+{
+    configDialog->show();
+}
+
+void MainWindow::aboutClick()
+{
+    QMessageBox::about(this, tr("About qChat"),
+                 tr("<b>qChat</b> - server-less chat client<br>"
+                    "developed by Darl"));
+}
+
 void MainWindow::processData()
 {
     while (globalSocket->hasPendingDatagrams())
@@ -115,11 +132,11 @@ MainWindow::MainWindow(QWidget *parent)
     onlineList->setModel(&userList);
     userList.objectName();
 
-    QDockWidget* tb2 = new QDockWidget(tr("User list"));
-    tb2->setObjectName("userListBar");
-    tb2->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
-    tb2->setWidget(onlineList);
-    addDockWidget(Qt::LeftDockWidgetArea,tb2);
+    QDockWidget* ul = new QDockWidget(tr("User list"));
+    ul->setObjectName("userListBar");
+    ul->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
+    ul->setWidget(onlineList);
+    addDockWidget(Qt::LeftDockWidgetArea,ul);
 
     setCentralWidget(chatArea);
 
@@ -132,6 +149,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(msgLine,SIGNAL(returnPressed()),this,SLOT(sendClick()));
     connect(globalSocket,SIGNAL(readyRead()),this,SLOT(processData()));
     connect(onlinePingTimer,SIGNAL(timeout()),this,SLOT(sendPing()));
+    connect(refreshButton,SIGNAL(clicked()),this,SLOT(refreshClick()));
+    connect(configButton,SIGNAL(clicked()),this,SLOT(configClick()));
+    connect(aboutButton,SIGNAL(clicked()),this,SLOT(aboutClick()));
 
     onlinePingTimer->start(5000);
 
@@ -150,6 +170,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
     sendOfflineWarning();
+    delete configDialog;
     QMainWindow::closeEvent(event);
 }
 
