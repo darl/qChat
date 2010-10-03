@@ -4,5 +4,8 @@
         <file alias="away">media/ico/status-away.ico</file>
         <file alias="busy">media/ico/status-busy.ico</file>
         <file alias="offline">media/ico/status-offline.ico</file>
+        <file alias="refresh">media/ico/arrow-circle-315.ico</file>
+        <file alias="about">media/ico/balloon-ellipsis.ico</file>
+        <file alias="config">media/ico/gear.ico</file>
     </qresource>
 </RCC>

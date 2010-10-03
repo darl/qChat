@@ -87,14 +87,28 @@ MainWindow::MainWindow(QWidget *parent)
     chatArea->setOpenLinks(false);
 
     msgLine = new QLineEdit(this);
-    msgLine->setPlaceholderText(tr("message"));
+    msgLine->setPlaceholderText(tr("Message"));
 
     sendButton = new QPushButton(tr("send"));
 
     QToolBar* tb = new QToolBar(tr("Send toolbar"));
-    addToolBar(Qt::BottomToolBarArea,tb);
+    tb->setObjectName("sendToolBar");
     tb->addWidget(msgLine);
     tb->addWidget(sendButton);
+    addToolBar(Qt::BottomToolBarArea,tb);
+
+    QToolBar* bb = new QToolBar(tr("Button bar"));
+    bb->setObjectName("buttonBar");
+    QPushButton* refreshButton = new QPushButton(QIcon(":/refresh"),"");
+    refreshButton->setFlat(true);
+    QPushButton* configButton = new QPushButton(QIcon(":/config"),"");
+    configButton->setFlat(true);
+    QPushButton* aboutButton = new QPushButton(QIcon(":/about"),"");
+    aboutButton->setFlat(true);
+    bb->addWidget(refreshButton);
+    bb->addWidget(configButton);
+    bb->addWidget(aboutButton);
+    addToolBar(Qt::RightToolBarArea,bb);
 
     QListView* onlineList = new QListView(this);
     onlineList->setUniformItemSizes(true);
@@ -102,6 +116,7 @@ MainWindow::MainWindow(QWidget *parent)
     userList.objectName();
 
     QDockWidget* tb2 = new QDockWidget(tr("User list"));
+    tb2->setObjectName("userListBar");
     tb2->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
     tb2->setWidget(onlineList);
     addDockWidget(Qt::LeftDockWidgetArea,tb2);
