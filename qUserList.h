@@ -3,6 +3,7 @@
 
 #include "qChat.h"
 #include "qTypes.h"
+#include "mainwindow.h"
 
 
 class QUserListModel : public QAbstractListModel
@@ -13,6 +14,7 @@ protected:
     QHash<QString,qUser*> userList;
 
 public:
+    friend class MainWindow;
     explicit QUserListModel(QObject *parent = 0);
     Qt::ItemFlags flags ( const QModelIndex & index ) const;
     QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
@@ -31,8 +33,5 @@ public slots:
 };
 
 extern QUserListModel userList;
-
-extern void updateUser(QHostAddress addr, QString nick, userStatus us);
-extern void removeUser(QHostAddress addr, QString nick, userStatus us);
 
 #endif // QUSERLIST_H

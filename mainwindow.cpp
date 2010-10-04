@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 
-void MainWindow::insertMessage(QString msg, bool insertTime, QString nick, QHostAddress from)
+void MainWindow::insertMessage(QString msg, bool insertTime, qUser* user)
 {
     QString addMsg;
 
@@ -11,8 +11,8 @@ void MainWindow::insertMessage(QString msg, bool insertTime, QString nick, QHost
     if(insertTime)
         addMsg+=tr("<font color='gray'>%1</font> ").arg(QTime::currentTime().toString());
 
-    if(nick != "")
-        addMsg+=tr("<a href='@%1'><b>%2</b></a>: ").arg(from.toString()).arg(nick);
+    if(user)
+        addMsg+=tr("<a href='@%1'><b>%2</b></a>: ").arg(user->address.toString()).arg(user->nick);
 
     addMsg+=msg;
 
@@ -25,6 +25,7 @@ void MainWindow::insertMessage(QString msg, bool insertTime, QString nick, QHost
     if(end) chatArea->verticalScrollBar()->setValue(chatArea->verticalScrollBar()->maximum());
 }
 
+//нажатие кнопки отправить
 void MainWindow::sendClick()
 {
     if(!msgLine->text().isEmpty())
@@ -34,14 +35,38 @@ void MainWindow::sendClick()
     msgLine->setFocus();
 }
 
+//обработка таймера onlinePingTimer
 void MainWindow::sendPing()
 {
     sendOnlinePing();
 }
 
+void MainWindow::onlineCheck()
+{
+    QHash<QString, qUser*>::iterator i = userList.userList.begin();
+    while (i != userList.userList.end()) {
+        qUser* u = *i;
+        if ((u->status!=usOffline) &&   //пользователь не в оффлайне
+            (u->lastCheck.msecsTo(QDateTime::currentDateTime())>=20000))
+        {    //20 секунд неактивности
+            insertMessage(tr("<font color='gray'>%1 has gone offline(timeout)</font>").arg(u->nick),true);
+            if(showOfflineUsers)
+                u->status=usOffline;
+            else
+                i = userList.userList.erase(i);
+        }
+        else
+        {
+            ++i;
+        }
+    }
+    emit userList.dataChanged(QModelIndex(),QModelIndex());
+}
+
 void MainWindow::refreshClick()
 {
-
+    onlineCheck();
+    sendWhoRequest();
 }
 
 void MainWindow::configClick()
@@ -52,7 +77,8 @@ void MainWindow::configClick()
 void MainWindow::aboutClick()
 {
     QMessageBox::about(this, tr("About qChat"),
-                 tr("<b>qChat</b> - server-less chat client<br>"
+                 tr("<img src=':/about'><b>qChat</b><br>"
+                    "server-less chat client<br>"
                     "developed by Darl"));
 }
 
@@ -70,7 +96,7 @@ void MainWindow::processData()
         switch(mt)
         {
         case mtMessage:
-            insertMessage(datagram.data(),true,userList[addr.toString()]->nick,addr);
+            insertMessage(datagram.data(),true,userList[addr.toString()]);
             break;
         case mtOnlinePing:
             userList.updateUser(addr,datagram.data(),us);
@@ -108,12 +134,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     sendButton = new QPushButton(tr("send"));
 
-    QToolBar* tb = new QToolBar(tr("Send toolbar"));
-    tb->setObjectName("sendToolBar");
-    tb->addWidget(msgLine);
-    tb->addWidget(sendButton);
-    addToolBar(Qt::BottomToolBarArea,tb);
-
     QToolBar* bb = new QToolBar(tr("Button bar"));
     bb->setObjectName("buttonBar");
     QPushButton* refreshButton = new QPushButton(QIcon(":/refresh"),"");
@@ -126,6 +146,12 @@ MainWindow::MainWindow(QWidget *parent)
     bb->addWidget(configButton);
     bb->addWidget(aboutButton);
     addToolBar(Qt::RightToolBarArea,bb);
+
+    QToolBar* tb = new QToolBar(tr("Send toolbar"));
+    tb->setObjectName("sendToolBar");
+    tb->addWidget(msgLine);
+    tb->addWidget(sendButton);
+    addToolBar(Qt::BottomToolBarArea,tb);
 
     QListView* onlineList = new QListView(this);
     onlineList->setUniformItemSizes(true);
@@ -144,16 +170,19 @@ MainWindow::MainWindow(QWidget *parent)
     globalSocket->bind(port,QUdpSocket::ReuseAddressHint);
 
     QTimer* onlinePingTimer = new QTimer(this);
+    QTimer* onlineCheckTimer = new QTimer(this);
 
     connect(sendButton,SIGNAL(clicked()),this,SLOT(sendClick()));
     connect(msgLine,SIGNAL(returnPressed()),this,SLOT(sendClick()));
     connect(globalSocket,SIGNAL(readyRead()),this,SLOT(processData()));
     connect(onlinePingTimer,SIGNAL(timeout()),this,SLOT(sendPing()));
+    connect(onlineCheckTimer,SIGNAL(timeout()),this,SLOT(onlineCheck()));
     connect(refreshButton,SIGNAL(clicked()),this,SLOT(refreshClick()));
     connect(configButton,SIGNAL(clicked()),this,SLOT(configClick()));
     connect(aboutButton,SIGNAL(clicked()),this,SLOT(aboutClick()));
 
     onlinePingTimer->start(5000);
+    onlineCheckTimer->start(15000);
 
     insertMessage(tr("<font color='gray'>qChat alpha - %1</font>").arg(QHostInfo::localHostName()));
     sendOnlineWarning();

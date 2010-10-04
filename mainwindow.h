@@ -16,16 +16,19 @@ private:
     QLineEdit* msgLine;
     QPushButton* sendButton;
 
-    void insertMessage(QString msg, bool insertTime = false, QString nick = "", QHostAddress from = QHostAddress::Null);
+    void insertMessage(QString msg, bool insertTime = false, qUser* user = NULL);
 
 private slots:
     void sendClick();
     void sendPing();
+
     void processData();
     void refreshClick();
     void configClick();
     void aboutClick();
 
+public slots:
+    void onlineCheck();
 protected:
     void closeEvent(QCloseEvent *event);
 

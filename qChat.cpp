@@ -27,6 +27,7 @@ void sendWhoRequest()
     QByteArray dg;
     dg.insert(0,mtWhoRequest);
     dg.insert(1,status);
+    globalSocket->writeDatagram(dg,broadcast,port);
 }
 
 void sendOnlinePing()

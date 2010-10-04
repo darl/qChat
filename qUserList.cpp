@@ -73,12 +73,24 @@ void QUserListModel::updateUser(QHostAddress addr, QString nick, userStatus us)
 
 void QUserListModel::removeUser(QHostAddress addr)
 {
-    beginRemoveRows(index(0),0,0);
-    userList.remove(addr.toString());
-    endRemoveRows();
+    if(showOfflineUsers)
+    {
+        if(userList.contains(addr.toString()))
+            userList.value(addr.toString())->status = usOffline;
+        emit dataChanged(QModelIndex(),QModelIndex());
+    }
+    else
+    {
+        beginRemoveRows(index(0),0,0);
+        userList.remove(addr.toString());
+        endRemoveRows();
+    }
 }
 
 qUser* QUserListModel::operator[] (QString n)
 {
-    return userList[n];
+    if(userList.contains(n))
+        return userList.value(n);
+    else
+        return NULL;
 }
