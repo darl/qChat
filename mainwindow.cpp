@@ -145,7 +145,7 @@ MainWindow::MainWindow(QWidget *parent)
     bb->addWidget(refreshButton);
     bb->addWidget(configButton);
     bb->addWidget(aboutButton);
-    addToolBar(Qt::RightToolBarArea,bb);
+    addToolBar(Qt::BottomToolBarArea,bb);
 
     QToolBar* tb = new QToolBar(tr("Send toolbar"));
     tb->setObjectName("sendToolBar");
