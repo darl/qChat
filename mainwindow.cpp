@@ -46,7 +46,7 @@ void MainWindow::onlineCheck()
     QHash<QString, qUser*>::iterator i = userList.userList.begin();
     while (i != userList.userList.end()) {
         qUser* u = *i;
-        if ((u->status!=usOffline) &&   //пользователь не в оффлайне
+        if (((u->status!=usOffline) || !showOfflineUsers) &&   //пользователь не в оффлайне
             (u->lastCheck.msecsTo(QDateTime::currentDateTime())>=20000))
         {    //20 секунд неактивности
             insertMessage(tr("<font color='gray'>%1 has gone offline(timeout)</font>").arg(u->nick),true);
