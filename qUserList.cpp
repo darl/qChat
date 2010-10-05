@@ -82,9 +82,37 @@ void QUserListModel::removeUser(QHostAddress addr)
     else
     {
         beginRemoveRows(index(0),0,0);
+        delete userList.value(addr.toString());
         userList.remove(addr.toString());
         endRemoveRows();
     }
+}
+
+QStringList QUserListModel::clearOfflineUsers()
+{
+    QStringList r;
+    QHash<QString, qUser*>::iterator i = userList.begin();
+    while (i != userList.end()) {
+        qUser* u = *i;
+        if (((u->status!=usOffline) || !showOfflineUsers) &&   //пользователь не в оффлайне
+            (u->lastCheck.msecsTo(QDateTime::currentDateTime())>=20000))
+        {    //20 секунд неактивности
+            r.append(u->nick);
+            if(showOfflineUsers)
+                u->status=usOffline;
+            else
+            {
+                delete (*i);
+                i = userList.erase(i);
+            }
+        }
+        else
+        {
+            ++i;
+        }
+    }
+    emit dataChanged(QModelIndex(),QModelIndex());
+    return r;
 }
 
 qUser* QUserListModel::operator[] (QString n)
