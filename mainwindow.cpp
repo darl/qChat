@@ -130,7 +130,7 @@ MainWindow::MainWindow(QWidget *parent)
     chatArea->setOpenLinks(false);
 
     msgLine = new QLineEdit(this);
-    msgLine->setPlaceholderText(tr("Message"));
+    msgLine->setPlaceholderText(tr("Input message here"));
 
     sendButton = new QPushButton(tr("send"));
 
