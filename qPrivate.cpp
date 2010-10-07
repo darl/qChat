@@ -7,11 +7,18 @@ qPrivate::qPrivate(QWidget *parent) :
     setMinimumWidth(250);
     setMinimumHeight(300);
 
-    QPushButton* addConferenceButton = new QPushButton(QIcon(":/addusertoconference"),"Add user",this);
+    QPushButton* addConferenceButton = new QPushButton(QIcon(":/addusertoconference"),"Add user");
     addConferenceButton->setFlat(true);
     addConferenceButton->setFocusPolicy(Qt::NoFocus);
-    QDialogButtonBox* bb = new QDialogButtonBox(this);
-    bb->addButton(addConferenceButton,QDialogButtonBox::ActionRole);
+    QPushButton* userListToggle = new QPushButton(QIcon(":/conference"),"Conference user list");
+    userListToggle->setFlat(true);
+    userListToggle->setFocusPolicy(Qt::NoFocus);
+    userListToggle->setCheckable(true);
+
+    QHBoxLayout* hl = new QHBoxLayout();
+    hl->addWidget(userListToggle,0,Qt::AlignLeft);
+    hl->addWidget(addConferenceButton,0,Qt::AlignRight);
+
 
 //    QIrExpander* ie = new QIrExpander();
     QListView* userList = new QListView(this);
@@ -32,12 +39,15 @@ qPrivate::qPrivate(QWidget *parent) :
 //    addToolBar(Qt::BottomToolBarArea,tb);
 
     QVBoxLayout* vl = new QVBoxLayout(this);
-    vl->addWidget(bb);
+    vl->addLayout(hl);
     vl->addWidget(userList,0);
     vl->addWidget(chatArea,1);
     vl->addWidget(tb);
     vl->setContentsMargins(0,0,0,0);
     vl->setSpacing(0);
-    //
+
+    connect(userListToggle,SIGNAL(toggled(bool)),userList,SLOT(setHidden(bool)));
+    userListToggle->setChecked(true);
+
     chatArea->insertHtml("blablabla<br>hslfjsdf<br><b>hhd</b>");
 }

@@ -2,7 +2,7 @@
 #define QPRIVATE_H
 
 #include <QDialog>
-#include <QVBoxLayout>
+#include <QBoxLayout>
 #include <QButtonGroup>
 #include <QDialogButtonBox>
 //#include "QIrExpander/qirexpander.h"
