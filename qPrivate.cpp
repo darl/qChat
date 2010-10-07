@@ -20,34 +20,37 @@ qPrivate::qPrivate(QWidget *parent) :
     hl->addWidget(addConferenceButton,0,Qt::AlignRight);
 
 
-//    QIrExpander* ie = new QIrExpander();
     QListView* userList = new QListView(this);
     userList->setMinimumHeight(100);
-    userList->setMaximumHeight(100);
+    userList->hide();
 
     QTextBrowser* chatArea = new QTextBrowser(this);
+
+    QSplitter* spl = new QSplitter(Qt::Vertical);
+    spl->addWidget(userList);
+    spl->addWidget(chatArea);
+    spl->setHandleWidth(1);
+    spl->setChildrenCollapsible(false);
+    QList<int> szs;
+    szs<<100<<300;
+    spl->setSizes(szs);
 
     QLineEdit* msgLine = new QLineEdit(this);
     msgLine->setPlaceholderText(tr("Input message here"));
 
     QPushButton* sendButton = new QPushButton(tr("send"));
 
-    QToolBar* tb = new QToolBar(tr("Send toolbar"));
-    tb->setObjectName("sendToolBar");
+    QHBoxLayout* tb = new QHBoxLayout();
     tb->addWidget(msgLine);
     tb->addWidget(sendButton);
-//    addToolBar(Qt::BottomToolBarArea,tb);
 
     QVBoxLayout* vl = new QVBoxLayout(this);
     vl->addLayout(hl);
-    vl->addWidget(userList,0);
-    vl->addWidget(chatArea,1);
-    vl->addWidget(tb);
+    vl->addWidget(spl,1);
+    vl->addLayout(tb);
     vl->setContentsMargins(0,0,0,0);
     vl->setSpacing(0);
 
-    connect(userListToggle,SIGNAL(toggled(bool)),userList,SLOT(setHidden(bool)));
-    userListToggle->setChecked(true);
+    connect(userListToggle,SIGNAL(toggled(bool)),userList,SLOT(setVisible(bool)));
 
-    chatArea->insertHtml("blablabla<br>hslfjsdf<br><b>hhd</b>");
 }
