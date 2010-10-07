@@ -54,6 +54,13 @@ void MainWindow::refreshClick()
     sendWhoRequest();
 }
 
+void MainWindow::conferenceClick()
+{
+//
+    qPrivate* wnd = new qPrivate();
+    wnd->show();
+}
+
 void MainWindow::configClick()
 {
     configDialog->show();
@@ -61,6 +68,7 @@ void MainWindow::configClick()
 
 void MainWindow::aboutClick()
 {
+    //placeholder
     QMessageBox::about(this, tr("About qChat"),
                  tr("<img src=':/about'><b>qChat</b><br>"
                     "server-less chat client<br>"
@@ -123,11 +131,14 @@ MainWindow::MainWindow(QWidget *parent)
     bb->setObjectName("buttonBar");
     QPushButton* refreshButton = new QPushButton(QIcon(":/refresh"),"");
     refreshButton->setFlat(true);
+    QPushButton* conferenceButton = new QPushButton(QIcon(":/conference"),"");
+    conferenceButton->setFlat(true);
     QPushButton* configButton = new QPushButton(QIcon(":/config"),"");
     configButton->setFlat(true);
     QPushButton* aboutButton = new QPushButton(QIcon(":/about"),"");
     aboutButton->setFlat(true);
     bb->addWidget(refreshButton);
+    bb->addWidget(conferenceButton);
     bb->addWidget(configButton);
     bb->addWidget(aboutButton);
     addToolBar(Qt::BottomToolBarArea,bb);
@@ -163,6 +174,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(onlinePingTimer,SIGNAL(timeout()),this,SLOT(sendPing()));
     connect(onlineCheckTimer,SIGNAL(timeout()),this,SLOT(onlineCheck()));
     connect(refreshButton,SIGNAL(clicked()),this,SLOT(refreshClick()));
+    connect(conferenceButton,SIGNAL(clicked()),this,SLOT(conferenceClick()));
     connect(configButton,SIGNAL(clicked()),this,SLOT(configClick()));
     connect(aboutButton,SIGNAL(clicked()),this,SLOT(aboutClick()));
 

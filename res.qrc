@@ -7,5 +7,7 @@
         <file alias="refresh">media/ico/arrow-circle-315.ico</file>
         <file alias="about">media/ico/balloon-ellipsis.ico</file>
         <file alias="config">media/ico/gear.ico</file>
+        <file alias="addusertoconference">media/ico/balloon--plus.ico</file>
+        <file alias="conference">media/ico/balloons.ico</file>
     </qresource>
 </RCC>
