@@ -5,6 +5,7 @@
 #include "qUserList.h"
 #include "qConfig.h"
 #include "qTypes.h"
+#include "qPrivate.h"
 
 
 class MainWindow : public QMainWindow
@@ -24,11 +25,11 @@ private slots:
 
     void processData();
     void refreshClick();
+    void conferenceClick();
     void configClick();
     void aboutClick();
-
-public slots:
     void onlineCheck();
+
 protected:
     void closeEvent(QCloseEvent *event);
 
