@@ -12,7 +12,7 @@ void MainWindow::insertMessage(QString msg, bool insertTime, qUser* user)
         addMsg+=tr("<font color='gray'>%1</font> ").arg(QTime::currentTime().toString());
 
     if(user)
-        addMsg+=tr("<a href='@%1'><b>%2</b></a>: ").arg(user->address.toString()).arg(user->nick);
+        addMsg+=tr("<a href='qchat://%1'><b>%2</b></a>: ").arg(user->address.toString()).arg(user->nick);
 
     addMsg+=msg;
 
@@ -56,7 +56,6 @@ void MainWindow::refreshClick()
 
 void MainWindow::conferenceClick()
 {
-//
     qPrivate* wnd = new qPrivate();
     wnd->show();
 }
@@ -73,6 +72,14 @@ void MainWindow::aboutClick()
                  tr("<img src=':/about'><b>qChat</b><br>"
                     "server-less chat client<br>"
                     "developed by Darl"));
+}
+
+void MainWindow::linkClick(const QUrl& url)
+{
+    qUser* us = userList[url.host()];
+    if(!us) return;
+    msgLine->setText(us->nick+", "+msgLine->text());
+    msgLine->setFocus();
 }
 
 void MainWindow::processData()
@@ -120,28 +127,35 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     chatArea = new QTextBrowser(this);
-    chatArea->setOpenLinks(false);
-
-    msgLine = new QLineEdit(this);
-    msgLine->setPlaceholderText(tr("Input message here"));
-
-    sendButton = new QPushButton(tr("send"));
+    chatArea->setOpenExternalLinks(true);   //ссылки будут открываться внешне, а не будут пытаться открыться внутри виджета
+    QDesktopServices::setUrlHandler("qchat",this,"linkClick"); //это какая-то магия...
+    chatArea->setFocusPolicy(Qt::ClickFocus);
 
     QToolBar* bb = new QToolBar(tr("Button bar"));
     bb->setObjectName("buttonBar");
     QPushButton* refreshButton = new QPushButton(QIcon(":/refresh"),"");
     refreshButton->setFlat(true);
+    refreshButton->setFocusPolicy(Qt::NoFocus);
     QPushButton* conferenceButton = new QPushButton(QIcon(":/conference"),"");
     conferenceButton->setFlat(true);
+    conferenceButton->setFocusPolicy(Qt::NoFocus);
     QPushButton* configButton = new QPushButton(QIcon(":/config"),"");
     configButton->setFlat(true);
+    configButton->setFocusPolicy(Qt::NoFocus);
     QPushButton* aboutButton = new QPushButton(QIcon(":/about"),"");
     aboutButton->setFlat(true);
+    aboutButton->setFocusPolicy(Qt::NoFocus);
     bb->addWidget(refreshButton);
     bb->addWidget(conferenceButton);
     bb->addWidget(configButton);
     bb->addWidget(aboutButton);
     addToolBar(Qt::BottomToolBarArea,bb);
+
+    msgLine = new QLineEdit(this);
+    msgLine->setPlaceholderText(tr("Input message here"));
+
+    sendButton = new QPushButton(QIcon(":/send"),tr("send"));
+    sendButton->setFocusPolicy(Qt::NoFocus);
 
     QToolBar* tb = new QToolBar(tr("Send toolbar"));
     tb->setObjectName("sendToolBar");
@@ -152,7 +166,6 @@ MainWindow::MainWindow(QWidget *parent)
     QListView* onlineList = new QListView(this);
     onlineList->setUniformItemSizes(true);
     onlineList->setModel(&userList);
-    userList.objectName();
 
     QDockWidget* ul = new QDockWidget(tr("User list"));
     ul->setObjectName("userListBar");
@@ -182,6 +195,7 @@ MainWindow::MainWindow(QWidget *parent)
     onlineCheckTimer->start(15000);
 
     insertMessage(tr("<font color='gray'>qChat alpha - %1</font>").arg(QHostInfo::localHostName()));
+    setWindowTitle(tr("qChat - %1").arg(nick));
     sendOnlineWarning();
     sendWhoRequest();
 

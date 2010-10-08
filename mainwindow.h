@@ -7,7 +7,6 @@
 #include "qTypes.h"
 #include "qPrivate.h"
 
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -29,6 +28,9 @@ private slots:
     void configClick();
     void aboutClick();
     void onlineCheck();
+
+public slots:
+    void linkClick(const QUrl& url);
 
 protected:
     void closeEvent(QCloseEvent *event);

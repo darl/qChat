@@ -23,12 +23,15 @@ qPrivate::qPrivate(QWidget *parent) :
     QListView* userList = new QListView(this);
     userList->setMinimumHeight(100);
     userList->hide();
+    userList->setFrameShape(QFrame::Panel);
 
     QTextBrowser* chatArea = new QTextBrowser(this);
 
     QSplitter* spl = new QSplitter(Qt::Vertical);
     spl->addWidget(userList);
     spl->addWidget(chatArea);
+    spl->setStretchFactor(0,0);
+    spl->setStretchFactor(1,1);
     spl->setHandleWidth(1);
     spl->setChildrenCollapsible(false);
     QList<int> szs;

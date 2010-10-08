@@ -19,6 +19,7 @@
 #include <QTimer>
 #include <QSettings>
 #include <QMessageBox>
+#include <QDesktopServices>
 
 enum messageType{
     mtMessage,

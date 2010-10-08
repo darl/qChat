@@ -9,5 +9,6 @@
         <file alias="config">media/ico/gear.ico</file>
         <file alias="addusertoconference">media/ico/balloon--plus.ico</file>
         <file alias="conference">media/ico/balloons.ico</file>
+        <file alias="send">media/ico/balloon--arrow.ico</file>
     </qresource>
 </RCC>
