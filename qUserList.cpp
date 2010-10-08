@@ -73,6 +73,7 @@ void QUserListModel::updateUser(QHostAddress addr, QString nick, userStatus us)
 
 void QUserListModel::removeUser(QHostAddress addr)
 {
+    if(!userList.contains(addr.toString())) return;
     if(showOfflineUsers)
     {
         if(userList.contains(addr.toString()))

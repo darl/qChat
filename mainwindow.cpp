@@ -82,6 +82,25 @@ void MainWindow::linkClick(const QUrl& url)
     msgLine->setFocus();
 }
 
+void MainWindow::trayClick(QSystemTrayIcon::ActivationReason ar)
+{
+    if(ar==QSystemTrayIcon::Trigger)
+        setVisible(!isVisible());
+    if(isVisible())
+        activateWindow();
+}
+
+void MainWindow::exitClick()
+{
+    QSettings settings("qChat");
+    settings.setValue("geometry", saveGeometry());
+    settings.setValue("windowState", saveState());
+    sendOfflineWarning();
+    tray->hide();
+    delete configDialog;
+    exit(0);
+}
+
 void MainWindow::processData()
 {
     while (globalSocket->hasPendingDatagrams())
@@ -181,6 +200,18 @@ MainWindow::MainWindow(QWidget *parent)
     QTimer* onlinePingTimer = new QTimer(this);
     QTimer* onlineCheckTimer = new QTimer(this);
 
+    QMenu* trayMenu = new QMenu();
+    trayMenu->addAction(QIcon(":/chat-white"),"Show qChat",this,SLOT(show()));
+    trayMenu->addSeparator();
+    trayMenu->addMenu(QIcon(statusIcons[status]),"Status");
+    trayMenu->addAction(QIcon(":/config"),"Config");
+    trayMenu->addSeparator();
+    trayMenu->addAction(QIcon(":/close"),"Exit",this,SLOT(exitClick()));
+
+    tray = new QSystemTrayIcon(QIcon(":/chat"),this);
+    tray->setContextMenu(trayMenu);
+    tray->show();
+
     connect(sendButton,SIGNAL(clicked()),this,SLOT(sendClick()));
     connect(msgLine,SIGNAL(returnPressed()),this,SLOT(sendClick()));
     connect(globalSocket,SIGNAL(readyRead()),this,SLOT(processData()));
@@ -190,12 +221,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(conferenceButton,SIGNAL(clicked()),this,SLOT(conferenceClick()));
     connect(configButton,SIGNAL(clicked()),this,SLOT(configClick()));
     connect(aboutButton,SIGNAL(clicked()),this,SLOT(aboutClick()));
+    connect(tray,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayClick(QSystemTrayIcon::ActivationReason)));
 
     onlinePingTimer->start(5000);
     onlineCheckTimer->start(15000);
 
     insertMessage(tr("<font color='gray'>qChat alpha - %1</font>").arg(QHostInfo::localHostName()));
     setWindowTitle(tr("qChat - %1").arg(nick));
+    setWindowFlags(Qt::Window |Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
     sendOnlineWarning();
     sendWhoRequest();
 
@@ -206,12 +239,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    QSettings settings("qChat");
-    settings.setValue("geometry", saveGeometry());
-    settings.setValue("windowState", saveState());
-    sendOfflineWarning();
-    delete configDialog;
-    QMainWindow::closeEvent(event);
+    hide();
+    event->ignore();
 }
 
 MainWindow::~MainWindow()

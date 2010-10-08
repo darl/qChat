@@ -10,5 +10,8 @@
         <file alias="addusertoconference">media/ico/balloon--plus.ico</file>
         <file alias="conference">media/ico/balloons.ico</file>
         <file alias="send">media/ico/balloon--arrow.ico</file>
+        <file alias="chat">media/ico/balloon.ico</file>
+        <file alias="chat-white">media/ico/balloon-white.ico</file>
+        <file alias="close">media/ico/cross-button.ico</file>
     </qresource>
 </RCC>

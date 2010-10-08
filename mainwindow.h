@@ -15,6 +15,7 @@ private:
     QTextBrowser* chatArea;
     QLineEdit* msgLine;
     QPushButton* sendButton;
+    QSystemTrayIcon* tray;
 
     void insertMessage(QString msg, bool insertTime = false, qUser* user = NULL);
 
@@ -28,9 +29,10 @@ private slots:
     void configClick();
     void aboutClick();
     void onlineCheck();
-
-public slots:
     void linkClick(const QUrl& url);
+    void trayClick(QSystemTrayIcon::ActivationReason ar);
+    void exitClick();
+
 
 protected:
     void closeEvent(QCloseEvent *event);

@@ -20,6 +20,9 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QSystemTrayIcon>
+#include <QCloseEvent>
+#include <QMenu>
 
 enum messageType{
     mtMessage,
