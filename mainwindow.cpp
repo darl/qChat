@@ -14,6 +14,8 @@ void MainWindow::insertMessage(QString msg, bool insertTime, qUser* user)
 {
     QString addMsg;
 
+    msg.replace(QRegExp(tr("\\b(%1)\\b").arg(nick),Qt::CaseInsensitive),"<font style='background-color:yellow'>\\1</font>");
+
     if(chatArea->toPlainText().size()!=0)
         addMsg+=tr("<br>");
 
@@ -116,7 +118,7 @@ void MainWindow::exitClick()
     sendOfflineWarning();
     tray->hide();
     delete configDialog;
-    exit(0);
+    qApp->quit();
 }
 
 void MainWindow::processData()
