@@ -14,8 +14,6 @@ void MainWindow::insertMessage(QString msg, bool insertTime, qUser* user)
 {
     QString addMsg;
 
-    msg.replace(QRegExp(tr("\\b(%1)\\b").arg(nick),Qt::CaseInsensitive),"<font style='background-color:yellow'>\\1</font>");
-
     if(chatArea->toPlainText().size()!=0)
         addMsg+=tr("<br>");
 
@@ -23,7 +21,12 @@ void MainWindow::insertMessage(QString msg, bool insertTime, qUser* user)
         addMsg+=tr("<font color='gray'>%1</font> ").arg(QTime::currentTime().toString());
 
     if(user)
+    {
+        //подсветка своего ника
+        msg.replace(QRegExp(tr("\\b(%1)\\b").arg(nick),Qt::CaseInsensitive),"<font style='background-color:yellow'>\\1</font>");
+        //отправитель
         addMsg+=tr("<a href='qchat://%1'><b>%2</b></a>: ").arg(user->address.toString()).arg(user->nick);
+    }
 
     addMsg+=msg;
 
