@@ -1,11 +1,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "qChat.h"
-#include "qUserList.h"
-#include "qConfig.h"
-#include "qTypes.h"
-#include "qPrivate.h"
+#include <QMainWindow>
+#include <QSystemTrayIcon>
+
+class QTextBrowser;
+class QLineEdit;
+class QPushButton;
+class qUser;
+class QUrl;
 
 class MainWindow : public QMainWindow
 {
@@ -30,7 +33,7 @@ private slots:
     void aboutClick();
     void onlineCheck();
     void linkClick(const QUrl& url);
-    void trayClick(QSystemTrayIcon::ActivationReason ar);
+    void trayClick(QSystemTrayIcon::ActivationReason);
     void exitClick();
 
 

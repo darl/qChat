@@ -2,11 +2,6 @@
 #define QPRIVATE_H
 
 #include <QDialog>
-#include <QBoxLayout>
-#include <QButtonGroup>
-#include <QDialogButtonBox>
-#include <QSplitter>
-#include "qTypes.h"
 
 class qPrivate : public QDialog
 {

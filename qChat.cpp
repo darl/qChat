@@ -1,5 +1,8 @@
 #include "qChat.h"
 
+#include <QtNetwork>
+
+#include "qConfig.h"
 
 QUdpSocket* globalSocket;
 

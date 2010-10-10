@@ -1,5 +1,14 @@
 #include "mainwindow.h"
 
+#include <QtGui>
+#include <QtNetwork/QUdpSocket>
+#include <QtNetwork/QHostInfo>
+
+#include "qTypes.h"
+#include "qChat.h"
+#include "qUserList.h"
+#include "qPrivate.h"
+#include "qConfig.h"
 
 void MainWindow::insertMessage(QString msg, bool insertTime, qUser* user)
 {
@@ -67,11 +76,10 @@ void MainWindow::configClick()
 
 void MainWindow::aboutClick()
 {
-    //placeholder
     QMessageBox::about(this, tr("About qChat"),
-                 tr("<img src=':/about'><b>qChat</b><br>"
-                    "server-less chat client<br>"
-                    "developed by Darl"));
+                 tr("<h2>qChat</h2>"
+                    "<p>developed by Darl<p>"
+                    "<p>qChat is a small server-less chat client</p>"));
 }
 
 void MainWindow::linkClick(const QUrl& url)
@@ -210,7 +218,7 @@ MainWindow::MainWindow(QWidget *parent)
         statusMenu->addAction(QIcon(":/online"),"Online");
         statusMenu->addAction(QIcon(":/away"),"Away");
         statusMenu->addAction(QIcon(":/busy"),"Busy");
-    trayMenu->addAction(QIcon(":/config"),"Config",configDialog,SLOT(show()));
+    trayMenu->addAction(QIcon(":/config"),"Config",this,SLOT(configClick()));
     trayMenu->addSeparator();
     trayMenu->addAction(QIcon(":/close"),"Exit",this,SLOT(exitClick()));
 

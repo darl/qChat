@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>255</width>
+    <width>202</width>
     <height>368</height>
    </rect>
   </property>
@@ -21,8 +21,8 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>255</width>
-    <height>368</height>
+    <width>16777215</width>
+    <height>16777215</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -50,6 +50,9 @@
         <property name="text">
          <string>Nickname</string>
         </property>
+        <property name="buddy">
+         <cstring>nickEditor</cstring>
+        </property>
        </widget>
       </item>
       <item>
@@ -59,6 +62,9 @@
        <widget class="QLabel" name="statusLabel">
         <property name="text">
          <string>Status</string>
+        </property>
+        <property name="buddy">
+         <cstring>statusEdit</cstring>
         </property>
        </widget>
       </item>
@@ -107,6 +113,9 @@
         <property name="text">
          <string>Broadcast address</string>
         </property>
+        <property name="buddy">
+         <cstring>addressEdit</cstring>
+        </property>
        </widget>
       </item>
       <item>
@@ -120,6 +129,9 @@
        <widget class="QLabel" name="portLabel">
         <property name="text">
          <string>Broadcast port</string>
+        </property>
+        <property name="buddy">
+         <cstring>portEdit</cstring>
         </property>
        </widget>
       </item>
@@ -174,10 +186,23 @@
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
+     <property name="centerButtons">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>nickEditor</tabstop>
+  <tabstop>statusEdit</tabstop>
+  <tabstop>addressEdit</tabstop>
+  <tabstop>portEdit</tabstop>
+  <tabstop>invisibleModeEdit</tabstop>
+  <tabstop>htmlTagsEdit</tabstop>
+  <tabstop>offlineUsersEdit</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="res.qrc"/>
  </resources>
@@ -189,8 +214,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>192</x>
+     <y>358</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -205,11 +230,11 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>192</x>
+     <y>358</y>
     </hint>
     <hint type="destinationlabel">
-     <x>286</x>
+     <x>201</x>
      <y>274</y>
     </hint>
    </hints>

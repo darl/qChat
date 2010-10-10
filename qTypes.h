@@ -1,28 +1,8 @@
 #ifndef QTYPES_H
 #define QTYPES_H
 
-#include <QtNetwork/QUdpSocket>
-#include <QtNetwork/QHostAddress>
-#include <QtNetwork/QHostInfo>
-#include <QtGui/QMainWindow>
-#include <QTextBrowser>
-#include <QLineEdit>
-#include <QDialog>
-#include <QAbstractListModel>
 #include <QDateTime>
-#include <QToolBar>
-#include <QScrollBar>
-#include <QPushButton>
-#include <QListView>
-#include <QTextCodec>
-#include <QDockWidget>
-#include <QTimer>
-#include <QSettings>
-#include <QMessageBox>
-#include <QDesktopServices>
-#include <QSystemTrayIcon>
-#include <QCloseEvent>
-#include <QMenu>
+#include <QHostAddress>
 
 enum messageType{
     mtMessage,

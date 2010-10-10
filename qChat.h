@@ -1,9 +1,8 @@
 #ifndef QCHAT_H
 #define QCHAT_H
 
-#include "qTypes.h"
-#include "qConfig.h"
-
+class QUdpSocket;
+class QString;
 
 extern QUdpSocket* globalSocket;
 

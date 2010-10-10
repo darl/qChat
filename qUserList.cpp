@@ -1,7 +1,11 @@
 #include "qUserList.h"
 
-QUserListModel userList;
+#include <QIcon>
 
+#include "qChat.h"
+#include "qConfig.h"
+
+QUserListModel userList;
 
 QUserListModel::QUserListModel(QObject *parent) :
     QAbstractListModel(parent)

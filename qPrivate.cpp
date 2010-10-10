@@ -1,5 +1,6 @@
 #include "qPrivate.h"
 
+#include <QtGui>
 
 qPrivate::qPrivate(QWidget *parent) :
     QDialog(parent)

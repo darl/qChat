@@ -1,7 +1,9 @@
 #include "qConfig.h"
 #include "ui_qconfig.h"
 
+#include <QtNetwork/QHostInfo>
 
+#include "qChat.h"
 
 qConfig::qConfig(QWidget *parent) :
     QDialog(parent),
@@ -9,7 +11,8 @@ qConfig::qConfig(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(this,SIGNAL(accepted()),this,SLOT(apply()));
-
+    adjustSize();
+    ui->verticalLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 qConfig::~qConfig()
