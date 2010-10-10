@@ -28,7 +28,7 @@ RESOURCES += \
         res.qrc
 
 win32 {
-	RC_FILE = ico.rc
+    RC_FILE = ico.rc
 }
 
 FORMS += \

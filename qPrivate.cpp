@@ -41,7 +41,7 @@ qPrivate::qPrivate(QWidget *parent) :
     QLineEdit* msgLine = new QLineEdit(this);
     msgLine->setPlaceholderText(tr("Input message here"));
 
-    QPushButton* sendButton = new QPushButton(tr("send"));
+    QPushButton* sendButton = new QPushButton(QIcon(":/send"),tr("send"));
 
     QHBoxLayout* tb = new QHBoxLayout();
     tb->addWidget(msgLine);
@@ -56,4 +56,6 @@ qPrivate::qPrivate(QWidget *parent) :
 
     connect(userListToggle,SIGNAL(toggled(bool)),userList,SLOT(setVisible(bool)));
 
+    setWindowIcon(QIcon(":/conference"));
+    setWindowTitle("Conference 0");
 }

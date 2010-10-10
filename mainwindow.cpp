@@ -87,7 +87,10 @@ void MainWindow::trayClick(QSystemTrayIcon::ActivationReason ar)
     if(ar==QSystemTrayIcon::Trigger)
         setVisible(!isVisible());
     if(isVisible())
+    {
+        raise();
         activateWindow();
+    }
 }
 
 void MainWindow::exitClick()
@@ -203,8 +206,11 @@ MainWindow::MainWindow(QWidget *parent)
     QMenu* trayMenu = new QMenu();
     trayMenu->addAction(QIcon(":/chat-white"),"Show qChat",this,SLOT(show()));
     trayMenu->addSeparator();
-    trayMenu->addMenu(QIcon(statusIcons[status]),"Status");
-    trayMenu->addAction(QIcon(":/config"),"Config");
+    QMenu* statusMenu = trayMenu->addMenu(QIcon(statusIcons[status]),"Status");
+        statusMenu->addAction(QIcon(":/online"),"Online");
+        statusMenu->addAction(QIcon(":/away"),"Away");
+        statusMenu->addAction(QIcon(":/busy"),"Busy");
+    trayMenu->addAction(QIcon(":/config"),"Config",configDialog,SLOT(show()));
     trayMenu->addSeparator();
     trayMenu->addAction(QIcon(":/close"),"Exit",this,SLOT(exitClick()));
 
@@ -229,6 +235,7 @@ MainWindow::MainWindow(QWidget *parent)
     insertMessage(tr("<font color='gray'>qChat alpha - %1</font>").arg(QHostInfo::localHostName()));
     setWindowTitle(tr("qChat - %1").arg(nick));
     setWindowFlags(Qt::Window |Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
+    setWindowIcon(QIcon(":/chat"));
     sendOnlineWarning();
     sendWhoRequest();
 

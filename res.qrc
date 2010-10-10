@@ -1,17 +1,17 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="online">media/ico/status.ico</file>
-        <file alias="away">media/ico/status-away.ico</file>
-        <file alias="busy">media/ico/status-busy.ico</file>
-        <file alias="offline">media/ico/status-offline.ico</file>
-        <file alias="refresh">media/ico/arrow-circle-315.ico</file>
-        <file alias="about">media/ico/balloon-ellipsis.ico</file>
-        <file alias="config">media/ico/gear.ico</file>
-        <file alias="addusertoconference">media/ico/balloon--plus.ico</file>
-        <file alias="conference">media/ico/balloons.ico</file>
-        <file alias="send">media/ico/balloon--arrow.ico</file>
-        <file alias="chat">media/ico/balloon.ico</file>
-        <file alias="chat-white">media/ico/balloon-white.ico</file>
-        <file alias="close">media/ico/cross-button.ico</file>
+        <file alias="refresh">media/png/arrow-circle-315.png</file>
+        <file alias="chat">media/png/balloon.png</file>
+        <file alias="send">media/png/balloon--arrow.png</file>
+        <file alias="about">media/png/balloon-ellipsis.png</file>
+        <file alias="addusertoconference">media/png/balloon--plus.png</file>
+        <file alias="conference">media/png/balloons.png</file>
+        <file alias="chat-white">media/png/balloon-white.png</file>
+        <file alias="close">media/png/cross-button.png</file>
+        <file alias="config">media/png/gear.png</file>
+        <file alias="online">media/png/status.png</file>
+        <file alias="away">media/png/status-away.png</file>
+        <file alias="busy">media/png/status-busy.png</file>
+        <file alias="offline">media/png/status-offline.png</file>
     </qresource>
 </RCC>
