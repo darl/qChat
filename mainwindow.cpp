@@ -103,9 +103,16 @@ void MainWindow::trayClick(QSystemTrayIcon::ActivationReason ar)
 
 void MainWindow::exitClick()
 {
+    //сохранение настроек
     QSettings settings("qChat");
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
+    settings.setValue("nick",nick);
+    settings.setValue("status",status);
+    settings.setValue("broadcast",broadcast.toString());
+    settings.setValue("port",port);
+    //тестовые функции не сохраняются
+
     sendOfflineWarning();
     tray->hide();
     delete configDialog;
@@ -144,7 +151,6 @@ void MainWindow::processData()
             insertMessage(tr("<font color='gray'>%1 has gone offline</font>").arg(datagram.data()),true);
             break;
         case mtSystemMessage:
-            //
             insertMessage(tr("<font color='red'>%1</font>").arg(datagram.data()),true);
             break;
         default:
@@ -250,6 +256,10 @@ MainWindow::MainWindow(QWidget *parent)
     QSettings settings("qChat");
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
+    nick = settings.value("nick",QHostInfo::localHostName()).toString();
+    status = static_cast<userStatus>(settings.value("status",usOnline).toInt());
+    broadcast.setAddress(settings.value("broadcast","172.18.255.255").toString());
+    port = settings.value("port",49675).toInt();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

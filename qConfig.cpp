@@ -33,7 +33,7 @@ void qConfig::showEvent ( QShowEvent * event )
 }
 
 quint16 port = 49675;                                   //default port
-QHostAddress broadcast(QObject::tr("172.18.255.255"));  //broadcasting mask
+QHostAddress broadcast("172.18.255.255");               //broadcasting mask
 
 QString nick = QHostInfo::localHostName();              //default Nickname
 userStatus status = usOnline;
