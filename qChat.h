@@ -1,18 +1,21 @@
 #ifndef QCHAT_H
 #define QCHAT_H
 
+#include "qTypes.h"
+
 class QUdpSocket;
 class QString;
+class QIcon;
 
 extern QUdpSocket* globalSocket;
 
-extern QString statusIcons[];
+QIcon statusIcons(userStatus st);
 
-extern void sendMessage(const QString& msg);
-extern void sendWhoRequest();
-extern void sendOnlinePing();
-extern void sendOnlineWarning();
-extern void sendOfflineWarning();
+void sendMessage(const QString& msg);
+void sendWhoRequest();
+void sendOnlinePing();
+void sendOnlineWarning();
+void sendOfflineWarning();
 
 
 #endif // QCHAT_H

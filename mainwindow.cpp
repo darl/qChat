@@ -223,10 +223,18 @@ MainWindow::MainWindow(QWidget *parent)
     QTimer* onlinePingTimer = new QTimer(this);
     QTimer* onlineCheckTimer = new QTimer(this);
 
+    QSettings settings("qChat");
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("windowState").toByteArray());
+    nick = settings.value("nick",QHostInfo::localHostName()).toString();
+    status = static_cast<userStatus>(settings.value("status",usOnline).toInt());
+    broadcast.setAddress(settings.value("broadcast","172.18.255.255").toString());
+    port = settings.value("port",49675).toInt();
+
     QMenu* trayMenu = new QMenu();
     trayMenu->addAction(QIcon(":/chat-white"),"Show qChat",this,SLOT(show()));
     trayMenu->addSeparator();
-    QMenu* statusMenu = trayMenu->addMenu(QIcon(statusIcons[status]),"Status");
+    QMenu* statusMenu = trayMenu->addMenu(statusIcons(status),"Status");
         statusMenu->addAction(QIcon(":/online"),"Online");
         statusMenu->addAction(QIcon(":/away"),"Away");
         statusMenu->addAction(QIcon(":/busy"),"Busy");
@@ -256,16 +264,9 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(tr("qChat - %1").arg(nick));
     setWindowFlags(Qt::Window |Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
     setWindowIcon(QIcon(":/chat"));
+
     sendOnlineWarning();
     sendWhoRequest();
-
-    QSettings settings("qChat");
-    restoreGeometry(settings.value("geometry").toByteArray());
-    restoreState(settings.value("windowState").toByteArray());
-    nick = settings.value("nick",QHostInfo::localHostName()).toString();
-    status = static_cast<userStatus>(settings.value("status",usOnline).toInt());
-    broadcast.setAddress(settings.value("broadcast","172.18.255.255").toString());
-    port = settings.value("port",49675).toInt();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

@@ -1,13 +1,28 @@
 #include "qChat.h"
 
+#include <QtGui>
 #include <QtNetwork>
 
 #include "qConfig.h"
 
 QUdpSocket* globalSocket;
 
-QString statusIcons[] = {":/online",":/away",":/busy",":/offline"};
-
+QIcon statusIcons(userStatus st)
+{
+    switch(st)
+    {
+    case usOnline:
+        return QIcon(":/online");
+    case usAway:
+        return QIcon(":/away");
+    case usBusy:
+        return QIcon(":/busy");
+    case usOffline:
+        return QIcon(":/offline");
+    default:
+        return QIcon();
+    }
+}
 
 void sendMessage(const QString& msg)
 {
