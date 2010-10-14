@@ -8,7 +8,7 @@ extern QUdpSocket* globalSocket;
 
 extern QString statusIcons[];
 
-extern void sendMessage(QString msg);
+extern void sendMessage(const QString& msg);
 extern void sendWhoRequest();
 extern void sendOnlinePing();
 extern void sendOnlineWarning();

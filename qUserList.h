@@ -27,7 +27,7 @@ public:
     void removeUser(QHostAddress addr);
     QStringList clearOfflineUsers();
 
-    qUser* operator[] (QString n);
+    qUser* operator[] (const QString& n);
 
 signals:
 

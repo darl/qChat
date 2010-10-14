@@ -9,17 +9,18 @@ QUdpSocket* globalSocket;
 QString statusIcons[] = {":/online",":/away",":/busy",":/offline"};
 
 
-void sendMessage(QString msg)
+void sendMessage(const QString& msg)
 {
+    QString originalMsg = msg;
     //запрет посылки html тегов
-    if(!htmlTags) msg.replace('<',"&lt;");
+    if(!htmlTags) originalMsg.replace('<',"&lt;");
 
     //распознование ссылок
-    msg.replace(QRegExp("(^|[\\n ])([\\w]*)((ht|f)tp(s?)://[\\w]+[^ \\\"\\n\\r\\t<]*)"),"\\1\\2<a href=\"\\3\">\\3</a>");
-    msg.replace(QRegExp("(^|[\\n ])([\\w]*)((www|ftp)\\.[^ \\,\\\"\\t\\n\\r<]*)"),"\\1\\2<a href=\"http://\\3\">\\3</a>");
-    msg.replace(QRegExp("(^|[\\n ])([a-z0-9&\\-_\\.]+)@([\\w\\-]+\\.([\\w\\-\\.]+)+)"),"\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>");
+    originalMsg.replace(QRegExp("(^|[\\n ])([\\w]*)((ht|f)tp(s?)://[\\w]+[^ \\\"\\n\\r\\t<]*)"),"\\1\\2<a href=\"\\3\">\\3</a>");
+    originalMsg.replace(QRegExp("(^|[\\n ])([\\w]*)((www|ftp)\\.[^ \\,\\\"\\t\\n\\r<]*)"),"\\1\\2<a href=\"http://\\3\">\\3</a>");
+    originalMsg.replace(QRegExp("(^|[\\n ])([a-z0-9&\\-_\\.]+)@([\\w\\-]+\\.([\\w\\-\\.]+)+)"),"\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>");
 
-    QByteArray dg=msg.toAscii();
+    QByteArray dg=originalMsg.toAscii();
     dg.insert(0,mtMessage);
     dg.insert(1,status);
     globalSocket->writeDatagram(dg,broadcast,port);

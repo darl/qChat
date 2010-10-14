@@ -20,7 +20,7 @@ private:
     QPushButton* sendButton;
     QSystemTrayIcon* tray;
 
-    void insertMessage(QString msg, bool insertTime = false, qUser* user = NULL);
+    void insertMessage(const QString& msg, bool insertTime = false, qUser* user = NULL);
 
 private slots:
     void sendClick();

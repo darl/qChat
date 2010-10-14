@@ -10,9 +10,10 @@
 #include "qPrivate.h"
 #include "qConfig.h"
 
-void MainWindow::insertMessage(QString msg, bool insertTime, qUser* user)
+void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
 {
     QString addMsg;
+    QString originalMsg = msg;
 
     if(chatArea->toPlainText().size()!=0)
         addMsg+=tr("<br>");
@@ -23,7 +24,7 @@ void MainWindow::insertMessage(QString msg, bool insertTime, qUser* user)
     if(user)
     {
         //подсветка своего ника
-        msg.replace(QRegExp(tr("\\b(%1)\\b").arg(nick),Qt::CaseInsensitive),"<font style='background-color:yellow'>\\1</font>");
+        originalMsg.replace(QRegExp(tr("\\b(%1)\\b").arg(nick),Qt::CaseInsensitive),"<font style='background-color:yellow'>\\1</font>");
         //отправитель
         addMsg+=tr("<a href='qchat://%1'><b>%2</b></a>: ").arg(user->address.toString()).arg(user->nick);
     }

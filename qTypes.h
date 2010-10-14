@@ -10,7 +10,8 @@ enum messageType{
     mtWhoRequest,
     mtOnlineWarning,
     mtOfflineWarning,
-    mtSystemMessage
+    mtSystemMessage,
+    mtBot
 };
 
 enum userStatus

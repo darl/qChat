@@ -120,7 +120,7 @@ QStringList QUserListModel::clearOfflineUsers()
     return r;
 }
 
-qUser* QUserListModel::operator[] (QString n)
+qUser* QUserListModel::operator[] (const QString& n)
 {
     if(userList.contains(n))
         return userList.value(n);
