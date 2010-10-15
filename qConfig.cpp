@@ -1,5 +1,5 @@
 #include "qConfig.h"
-#include "ui_qconfig.h"
+#include "ui_qConfig.h"
 
 #include <QtNetwork/QHostInfo>
 
