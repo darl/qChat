@@ -11,6 +11,7 @@ qConfig::qConfig(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(this,SIGNAL(accepted()),this,SLOT(apply()));
+    connect(this,SIGNAL(accepted()),parent,SLOT(sendPing()));
     adjustSize();
     ui->verticalLayout->setSizeConstraint(QLayout::SetFixedSize);
 }
@@ -56,5 +57,4 @@ void qConfig::apply()
     invisibleMode = ui->invisibleModeEdit->isChecked();
     htmlTags = ui->htmlTagsEdit->isChecked();
     showOfflineUsers = ui->offlineUsersEdit->isChecked();
-//    sendOnlinePing();
 }

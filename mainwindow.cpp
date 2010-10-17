@@ -249,7 +249,6 @@ MainWindow::MainWindow(QWidget *parent)
     general = new qGeneralChat(this);
     connect(general,SIGNAL(insertMessage(QString,bool,qUser*)),this,SLOT(insertMessage(QString,bool,qUser*)));
 
-
     //вставка сообщения "qChat alpha - %hostname%"
     insertMessage(tr("<font color='gray'>qChat alpha - %1</font>").arg(QHostInfo::localHostName()));
 

@@ -18,6 +18,8 @@ public:
     qGeneralChat(QObject * parent = 0);
     virtual ~qGeneralChat();
     void sendMessage(const QString& msg);
+
+public slots:
     void sendWhoRequest();
     void sendOnlinePing();
     void sendOnlineWarning();
