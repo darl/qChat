@@ -1,11 +1,13 @@
 #ifndef QCHAT_H
 #define QCHAT_H
 
+#include <QObject>
 #include "qTypes.h"
 
 class QUdpSocket;
 class QString;
 class QIcon;
+class qUser;
 
 QIcon statusIcons(userStatus st);
 //unsigned char us2c(userStatus st) {return static_cast<unsigned char>(st);};

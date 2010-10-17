@@ -15,14 +15,16 @@ SOURCES += main.cpp\
         qChat.cpp \
         qUserList.cpp \
         qConfig.cpp \
-        qPrivate.cpp
+        qPrivate.cpp \
+    qUser.cpp
 
 HEADERS += mainwindow.h \
         qChat.h \
         qUserList.h \
         qConfig.h \
         qTypes.h \
-        qPrivate.h
+        qPrivate.h \
+    qUser.h
 
 RESOURCES += \
         res.qrc

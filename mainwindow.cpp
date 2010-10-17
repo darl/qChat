@@ -50,22 +50,9 @@ void MainWindow::sendClick()
     msgLine->setFocus();
 }
 
-//обработка таймера onlinePingTimer
-void MainWindow::sendPing()
-{
-    general->sendOnlinePing();
-}
-
-void MainWindow::onlineCheck()
-{
-    QStringList torem(userList.clearOfflineUsers());
-    foreach (QString str, torem)
-        insertMessage(tr("<font color='gray'>%1 has gone offline(timeout)</font>").arg(str),true);
-}
-
 void MainWindow::refreshClick()
 {
-    onlineCheck();
+    userList.clearOfflineUsers();
     general->sendWhoRequest();
 }
 
@@ -115,6 +102,16 @@ void MainWindow::exitClick()
     tray->hide();
     delete configDialog;
     qApp->quit();
+}
+
+void MainWindow::nowOnline(qUser* u)
+{
+    insertMessage(tr("<font color='gray'>%1 has come online</font>").arg(u->nick),true,NULL);
+}
+
+void MainWindow::nowOffline(qUser* u)
+{
+    insertMessage(tr("<font color='gray'>%1 has gone offline</font>").arg(u->nick),true,NULL);
 }
 
 void MainWindow::createUI()
@@ -203,8 +200,8 @@ void MainWindow::createTimers()
     QTimer* onlinePingTimer = new QTimer(this);
     QTimer* onlineCheckTimer = new QTimer(this);
 
-    connect(onlinePingTimer,SIGNAL(timeout()),this,SLOT(sendPing()));
-    connect(onlineCheckTimer,SIGNAL(timeout()),this,SLOT(onlineCheck()));
+    connect(onlinePingTimer,SIGNAL(timeout()),general,SLOT(sendOnlinePing()));
+    connect(onlineCheckTimer,SIGNAL(timeout()),&userList,SLOT(clearOfflineUsers()));
 
     onlinePingTimer->start(5000);
     onlineCheckTimer->start(10000);
@@ -240,14 +237,18 @@ MainWindow::MainWindow(QWidget *parent)
     createUI();
 
 
+    general = new qGeneralChat(this);
+    connect(general,SIGNAL(insertMessage(QString,bool,qUser*)),this,SLOT(insertMessage(QString,bool,qUser*)));
+
+
     loadSettings();
 
     createTimers();
 
     createTray();
 
-    general = new qGeneralChat(this);
-    connect(general,SIGNAL(insertMessage(QString,bool,qUser*)),this,SLOT(insertMessage(QString,bool,qUser*)));
+    connect(&userList,SIGNAL(nowOnline(qUser*)),this,SLOT(nowOnline(qUser*)));
+    connect(&userList,SIGNAL(nowOffline(qUser*)),this,SLOT(nowOffline(qUser*)));
 
     //вставка сообщения "qChat alpha - %hostname%"
     insertMessage(tr("<font color='gray'>qChat alpha - %1</font>").arg(QHostInfo::localHostName()));

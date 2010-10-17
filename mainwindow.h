@@ -33,8 +33,8 @@ private:
 private slots:
     void insertMessage(const QString& msg, bool insertTime = false, qUser* user = NULL);
 
-    void onlineCheck();
-    void sendPing();
+    void nowOnline(qUser* u);
+    void nowOffline(qUser* u);
 
     void sendClick();
     void refreshClick();

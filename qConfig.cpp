@@ -11,7 +11,6 @@ qConfig::qConfig(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(this,SIGNAL(accepted()),this,SLOT(apply()));
-    connect(this,SIGNAL(accepted()),parent,SLOT(sendPing()));
     adjustSize();
     ui->verticalLayout->setSizeConstraint(QLayout::SetFixedSize);
 }

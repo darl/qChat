@@ -1,9 +1,6 @@
 #ifndef QTYPES_H
 #define QTYPES_H
 
-#include <QDateTime>
-#include <QHostAddress>
-
 enum messageType{
     mtMessage,
     mtOnlinePing,
@@ -21,17 +18,9 @@ enum userStatus
     usBusy,
     usOffline,
 
-    usCounterStrike = 10,
-    usDota,
+    usCounterStrike=6,
+    usDota=7,
     usQuake3
-};
-
-struct qUser
-{
-    QHostAddress address;
-    QString nick;
-    QDateTime lastCheck;
-    userStatus status;
 };
 
 #endif // QTYPES_H

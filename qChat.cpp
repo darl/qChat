@@ -5,6 +5,7 @@
 
 #include "qConfig.h"
 #include "qUserList.h"
+#include "qUser.h"
 
 QIcon statusIcons(userStatus st)
 {
@@ -26,6 +27,29 @@ QIcon statusIcons(userStatus st)
         return QIcon(":/q3");
     default:
         return QIcon(":/unknown");
+    }
+}
+
+QString statusIconsStr(userStatus st)
+{
+    switch(st)
+    {
+    case usOnline:
+        return (":/online");
+    case usAway:
+        return (":/away");
+    case usBusy:
+        return (":/busy");
+    case usOffline:
+        return (":/offline");
+    case usCounterStrike:
+        return (":/cs");
+    case usDota:
+        return (":/dota");
+    case usQuake3:
+        return (":/q3");
+    default:
+        return (":/unknown");
     }
 }
 
@@ -53,15 +77,17 @@ void qGeneralChat::processData()
             break;
         case mtOnlineWarning:
             userList.updateUser(addr,datagram.data(),us);
-            emit insertMessage(tr("<font color='gray'>%1 has come online</font>").arg(datagram.data()),true,NULL);
             sendOnlinePing();
             break;
         case mtOfflineWarning:
             userList.removeUser(addr);
-            emit insertMessage(tr("<font color='gray'>%1 has gone offline</font>").arg(datagram.data()),true,NULL);
             break;
         case mtSystemMessage:
             emit insertMessage(tr("<font color='red'>%1</font>").arg(datagram.data()),true,NULL);
+            break;
+        case mtBot:
+            emit insertMessage(QString::number(us),true,NULL);// для отладки с одним нехорошим человеком
+            emit insertMessage(tr("<font color='#005500'><img src='%2'>%1</font>").arg(datagram.data()).arg(statusIconsStr(us)),true,NULL);
             break;
         default:
             emit insertMessage(tr("<font color='red'><b>Unknown message (Type: %1, status: %2): %3</b></font>").arg(mt).arg(us).arg(datagram.data()),true,NULL);

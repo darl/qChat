@@ -4,7 +4,7 @@
 #include <QAbstractListModel>
 #include <QHash>
 
-#include "qTypes.h"
+#include "qUser.h"
 
 class qUser;
 class QHostAddress;
@@ -25,14 +25,17 @@ public:
 
     void updateUser(QHostAddress addr, QString nick, userStatus us);
     void removeUser(QHostAddress addr);
-    QStringList clearOfflineUsers();
+
 
     qUser* operator[] (const QString& n);
 
 signals:
+    void statusChanged(qUser* u);
+    void nowOnline(qUser* u);
+    void nowOffline(qUser* u);
 
 public slots:
-
+    void clearOfflineUsers();
 };
 
 extern QUserListModel userList;

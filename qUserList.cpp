@@ -4,6 +4,7 @@
 
 #include "qChat.h"
 #include "qConfig.h"
+#include "qUser.h"
 
 QUserListModel userList;
 
@@ -66,6 +67,8 @@ void QUserListModel::updateUser(QHostAddress addr, QString nick, userStatus us)
     user->address=addr;
     user->lastCheck = QDateTime::currentDateTime();
     user->nick = nick;
+    if(((!adding) && (user->status == usOffline)) || adding)
+        emit nowOnline(user);  //вызываем сигнал при добавлении нового или возврате в онлайн старого пользователя
     user->status = us;
 
     userList[addr.toString()] = user;
@@ -78,46 +81,26 @@ void QUserListModel::updateUser(QHostAddress addr, QString nick, userStatus us)
 void QUserListModel::removeUser(QHostAddress addr)
 {
     if(!userList.contains(addr.toString())) return;
-    if(showOfflineUsers)
-    {
-        if(userList.contains(addr.toString()))
-            userList.value(addr.toString())->status = usOffline;
-        emit dataChanged(QModelIndex(),QModelIndex());
-    }
-    else
-    {
-        beginRemoveRows(index(0),0,0);
-        delete userList.value(addr.toString());
-        userList.remove(addr.toString());
-        endRemoveRows();
-    }
+
+    userList.value(addr.toString())->status = usOffline;
+    emit nowOffline(userList.value(addr.toString()));
+
+    emit dataChanged(QModelIndex(),QModelIndex());
 }
 
-QStringList QUserListModel::clearOfflineUsers()
+void QUserListModel::clearOfflineUsers()
 {
-    QStringList r;
     QHash<QString, qUser*>::iterator i = userList.begin();
     while (i != userList.end()) {
         qUser* u = *i;
-        if (((u->status!=usOffline) || !showOfflineUsers) &&   //пользователь не в оффлайне
-            (u->lastCheck.msecsTo(QDateTime::currentDateTime())>=20000))
+        if (u->lastCheck.msecsTo(QDateTime::currentDateTime())>=20000)
         {    //20 секунд неактивности
-            r.append(u->nick);
-            if(showOfflineUsers)
-                u->status=usOffline;
-            else
-            {
-                delete (*i);
-                i = userList.erase(i);
-            }
+            u->status=usOffline;
+            emit nowOffline(u);
         }
-        else
-        {
-            ++i;
-        }
+        ++i;
     }
     emit dataChanged(QModelIndex(),QModelIndex());
-    return r;
 }
 
 qUser* QUserListModel::operator[] (const QString& n)
