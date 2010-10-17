@@ -29,7 +29,7 @@ void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
         addMsg+=tr("<a href='qchat://%1'><b>%2</b></a>: ").arg(user->address.toString()).arg(user->nick);
     }
 
-    addMsg+=msg;
+    addMsg+=originalMsg;
 
     bool end = (chatArea->verticalScrollBar()->value() == chatArea->verticalScrollBar()->maximum());
 
@@ -128,19 +128,15 @@ void MainWindow::createUI()
     bb->setObjectName("buttonBar");
     QToolButton* refreshButton = new QToolButton();
     refreshButton->setIcon(QIcon(":/refresh"));
-//    refreshButton->setFlat(true);
     refreshButton->setFocusPolicy(Qt::NoFocus);
     QToolButton* conferenceButton = new QToolButton();
     conferenceButton->setIcon(QIcon(":/conference"));
-//    conferenceButton->setFlat(true);
     conferenceButton->setFocusPolicy(Qt::NoFocus);
     QToolButton* configButton = new QToolButton();
     configButton->setIcon(QIcon(":/config"));
-//    configButton->setFlat(true);
     configButton->setFocusPolicy(Qt::NoFocus);
     QToolButton* aboutButton = new QToolButton();
     aboutButton->setIcon(QIcon(":/about"));
-//    aboutButton->setFlat(true);
     aboutButton->setFocusPolicy(Qt::NoFocus);
     bb->addWidget(refreshButton);
     bb->addWidget(conferenceButton);
