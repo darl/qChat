@@ -44,7 +44,7 @@ void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
 void MainWindow::sendClick()
 {
     if(!msgLine->text().isEmpty())
-        sendMessage(msgLine->text());
+        general->sendMessage(msgLine->text());
 
     msgLine->clear();
     msgLine->setFocus();
@@ -53,7 +53,7 @@ void MainWindow::sendClick()
 //обработка таймера onlinePingTimer
 void MainWindow::sendPing()
 {
-    sendOnlinePing();
+    general->sendOnlinePing();
 }
 
 void MainWindow::onlineCheck()
@@ -66,7 +66,7 @@ void MainWindow::onlineCheck()
 void MainWindow::refreshClick()
 {
     onlineCheck();
-    sendWhoRequest();
+    general->sendWhoRequest();
 }
 
 void MainWindow::conferenceClick()
@@ -109,64 +109,15 @@ void MainWindow::trayClick(QSystemTrayIcon::ActivationReason ar)
 
 void MainWindow::exitClick()
 {
-    //сохранение настроек
-    QSettings settings("qChat");
-    settings.setValue("geometry", saveGeometry());
-    settings.setValue("windowState", saveState());
-    settings.setValue("nick",nick);
-    settings.setValue("status",status);
-    settings.setValue("broadcast",broadcast.toString());
-    settings.setValue("port",port);
-    //тестовые функции не сохраняются
+    saveSettings();
 
-    sendOfflineWarning();
+    general->sendOfflineWarning();
     tray->hide();
     delete configDialog;
     qApp->quit();
 }
 
-void MainWindow::processData()
-{
-    while (globalSocket->hasPendingDatagrams())
-    {
-        QByteArray datagram;
-        QHostAddress addr;
-        datagram.resize(globalSocket->pendingDatagramSize());
-        globalSocket->readDatagram(datagram.data(), datagram.size(),&addr);
-        messageType mt = (messageType)(char)datagram[0];
-        userStatus us = (userStatus)(char)datagram[1];
-        datagram.remove(0,2);
-        switch(mt)
-        {
-        case mtMessage:
-            insertMessage(datagram.data(),true,userList[addr.toString()]);
-            break;
-        case mtOnlinePing:
-            userList.updateUser(addr,datagram.data(),us);
-            break;
-        case mtWhoRequest:
-            sendOnlinePing();
-            break;
-        case mtOnlineWarning:
-            userList.updateUser(addr,datagram.data(),us);
-            insertMessage(tr("<font color='gray'>%1 has come online</font>").arg(datagram.data()),true);
-            sendOnlinePing();
-            break;
-        case mtOfflineWarning:
-            userList.removeUser(addr);
-            insertMessage(tr("<font color='gray'>%1 has gone offline</font>").arg(datagram.data()),true);
-            break;
-        case mtSystemMessage:
-            insertMessage(tr("<font color='red'>%1</font>").arg(datagram.data()),true);
-            break;
-        default:
-            insertMessage(tr("<font color='red'><b>Unknown message (Type: %1, status: %2): %3</b></font>").arg(mt).arg(us).arg(datagram.data()),true);
-        }
-    }
-}
-
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+void MainWindow::createUI()
 {
     chatArea = new QTextBrowser(this);
     chatArea->setOpenExternalLinks(true);   //ссылки будут открываться внешне, а не будут пытаться открыться внутри виджета
@@ -175,17 +126,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     QToolBar* bb = new QToolBar(tr("Button bar"));
     bb->setObjectName("buttonBar");
-    QPushButton* refreshButton = new QPushButton(QIcon(":/refresh"),"");
-    refreshButton->setFlat(true);
+    QToolButton* refreshButton = new QToolButton();
+    refreshButton->setIcon(QIcon(":/refresh"));
+//    refreshButton->setFlat(true);
     refreshButton->setFocusPolicy(Qt::NoFocus);
-    QPushButton* conferenceButton = new QPushButton(QIcon(":/conference"),"");
-    conferenceButton->setFlat(true);
+    QToolButton* conferenceButton = new QToolButton();
+    conferenceButton->setIcon(QIcon(":/conference"));
+//    conferenceButton->setFlat(true);
     conferenceButton->setFocusPolicy(Qt::NoFocus);
-    QPushButton* configButton = new QPushButton(QIcon(":/config"),"");
-    configButton->setFlat(true);
+    QToolButton* configButton = new QToolButton();
+    configButton->setIcon(QIcon(":/config"));
+//    configButton->setFlat(true);
     configButton->setFocusPolicy(Qt::NoFocus);
-    QPushButton* aboutButton = new QPushButton(QIcon(":/about"),"");
-    aboutButton->setFlat(true);
+    QToolButton* aboutButton = new QToolButton();
+    aboutButton->setIcon(QIcon(":/about"));
+//    aboutButton->setFlat(true);
     aboutButton->setFocusPolicy(Qt::NoFocus);
     bb->addWidget(refreshButton);
     bb->addWidget(conferenceButton);
@@ -207,6 +162,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QListView* onlineList = new QListView(this);
     onlineList->setUniformItemSizes(true);
+    onlineList->setSelectionMode(QAbstractItemView::ExtendedSelection);
     onlineList->setModel(&userList);
 
     QDockWidget* ul = new QDockWidget(tr("User list"));
@@ -217,20 +173,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     setCentralWidget(chatArea);
 
-    globalSocket = new QUdpSocket(this);
-    globalSocket->bind(port,QUdpSocket::ReuseAddressHint);
+    connect(sendButton,SIGNAL(clicked()),this,SLOT(sendClick()));
+    connect(msgLine,SIGNAL(returnPressed()),this,SLOT(sendClick()));
+    connect(refreshButton,SIGNAL(clicked()),this,SLOT(refreshClick()));
+    connect(conferenceButton,SIGNAL(clicked()),this,SLOT(conferenceClick()));
+    connect(configButton,SIGNAL(clicked()),this,SLOT(configClick()));
+    connect(aboutButton,SIGNAL(clicked()),this,SLOT(aboutClick()));
+}
 
-    QTimer* onlinePingTimer = new QTimer(this);
-    QTimer* onlineCheckTimer = new QTimer(this);
-
-    QSettings settings("qChat");
-    restoreGeometry(settings.value("geometry").toByteArray());
-    restoreState(settings.value("windowState").toByteArray());
-    nick = settings.value("nick",QHostInfo::localHostName()).toString();
-    status = static_cast<userStatus>(settings.value("status",usOnline).toInt());
-    broadcast.setAddress(settings.value("broadcast","172.18.255.255").toString());
-    port = settings.value("port",49675).toInt();
-
+void MainWindow::createTray()
+{
     QMenu* trayMenu = new QMenu();
     trayMenu->addAction(QIcon(":/chat-white"),"Show qChat",this,SLOT(show()));
     trayMenu->addSeparator();
@@ -246,27 +198,71 @@ MainWindow::MainWindow(QWidget *parent)
     tray->setContextMenu(trayMenu);
     tray->show();
 
-    connect(sendButton,SIGNAL(clicked()),this,SLOT(sendClick()));
-    connect(msgLine,SIGNAL(returnPressed()),this,SLOT(sendClick()));
-    connect(globalSocket,SIGNAL(readyRead()),this,SLOT(processData()));
-    connect(onlinePingTimer,SIGNAL(timeout()),this,SLOT(sendPing()));
-    connect(onlineCheckTimer,SIGNAL(timeout()),this,SLOT(onlineCheck()));
-    connect(refreshButton,SIGNAL(clicked()),this,SLOT(refreshClick()));
-    connect(conferenceButton,SIGNAL(clicked()),this,SLOT(conferenceClick()));
-    connect(configButton,SIGNAL(clicked()),this,SLOT(configClick()));
-    connect(aboutButton,SIGNAL(clicked()),this,SLOT(aboutClick()));
     connect(tray,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayClick(QSystemTrayIcon::ActivationReason)));
 
-    onlinePingTimer->start(5000);
-    onlineCheckTimer->start(15000);
+}
 
+void MainWindow::createTimers()
+{
+    QTimer* onlinePingTimer = new QTimer(this);
+    QTimer* onlineCheckTimer = new QTimer(this);
+
+    connect(onlinePingTimer,SIGNAL(timeout()),this,SLOT(sendPing()));
+    connect(onlineCheckTimer,SIGNAL(timeout()),this,SLOT(onlineCheck()));
+
+    onlinePingTimer->start(5000);
+    onlineCheckTimer->start(10000);
+}
+
+void MainWindow::loadSettings()
+{
+    QSettings settings("qChat");
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("windowState").toByteArray());
+    nick = settings.value("nick",QHostInfo::localHostName()).toString();
+    status = static_cast<userStatus>(settings.value("status",usOnline).toInt());
+    broadcast.setAddress(settings.value("broadcast","172.18.255.255").toString());
+    port = settings.value("port",49675).toInt();
+}
+
+void MainWindow::saveSettings()
+{
+    //сохранение настроек
+    QSettings settings("qChat");
+    settings.setValue("geometry", saveGeometry());
+    settings.setValue("windowState", saveState());
+    settings.setValue("nick",nick);
+    settings.setValue("status",status);
+    settings.setValue("broadcast",broadcast.toString());
+    settings.setValue("port",port);
+    //тестовые функции не сохраняются
+}
+
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+{
+    createUI();
+
+
+    loadSettings();
+
+    createTimers();
+
+    createTray();
+
+    general = new qGeneralChat(this);
+    connect(general,SIGNAL(insertMessage(QString,bool,qUser*)),this,SLOT(insertMessage(QString,bool,qUser*)));
+
+
+    //вставка сообщения "qChat alpha - %hostname%"
     insertMessage(tr("<font color='gray'>qChat alpha - %1</font>").arg(QHostInfo::localHostName()));
-    setWindowTitle(tr("qChat - %1").arg(nick));
+
+    setWindowTitle(tr("qChat - general"));
     setWindowFlags(Qt::Window |Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
     setWindowIcon(QIcon(":/chat"));
 
-    sendOnlineWarning();
-    sendWhoRequest();
+    general->sendOnlineWarning();
+    general->sendWhoRequest();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

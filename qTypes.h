@@ -19,7 +19,11 @@ enum userStatus
     usOnline,
     usAway,
     usBusy,
-    usOffline
+    usOffline,
+
+    usCounterStrike = 10,
+    usDota,
+    usQuake3
 };
 
 struct qUser

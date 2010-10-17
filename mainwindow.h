@@ -9,6 +9,7 @@ class QLineEdit;
 class QPushButton;
 class qUser;
 class QUrl;
+class qGeneralChat;
 
 class MainWindow : public QMainWindow
 {
@@ -20,18 +21,26 @@ private:
     QPushButton* sendButton;
     QSystemTrayIcon* tray;
 
-    void insertMessage(const QString& msg, bool insertTime = false, qUser* user = NULL);
+    void createUI();
+    void createTray();
+    void createTimers();
+
+    void loadSettings();
+    void saveSettings();
+
+    qGeneralChat* general;
 
 private slots:
-    void sendClick();
+    void insertMessage(const QString& msg, bool insertTime = false, qUser* user = NULL);
+
+    void onlineCheck();
     void sendPing();
 
-    void processData();
+    void sendClick();
     void refreshClick();
     void conferenceClick();
     void configClick();
     void aboutClick();
-    void onlineCheck();
     void linkClick(const QUrl& url);
     void trayClick(QSystemTrayIcon::ActivationReason);
     void exitClick();

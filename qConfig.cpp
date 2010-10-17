@@ -56,5 +56,5 @@ void qConfig::apply()
     invisibleMode = ui->invisibleModeEdit->isChecked();
     htmlTags = ui->htmlTagsEdit->isChecked();
     showOfflineUsers = ui->offlineUsersEdit->isChecked();
-    sendOnlinePing();
+//    sendOnlinePing();
 }

@@ -13,5 +13,9 @@
         <file alias="away">media/png/status-away.png</file>
         <file alias="busy">media/png/status-busy.png</file>
         <file alias="offline">media/png/status-offline.png</file>
+        <file alias="cs">media/png/cs.png</file>
+        <file alias="dota">media/png/dota.png</file>
+        <file alias="q3">media/png/q3.png</file>
+        <file alias="unknown">media/png/user-silhouette-question.png</file>
     </qresource>
 </RCC>
