@@ -158,7 +158,34 @@ qGeneralChat::qGeneralChat(QObject* obj) : QObject(obj)
     connect(globalSocket,SIGNAL(readyRead()),this,SLOT(processData()));
 }
 
-qGeneralChat::~qGeneralChat()
-{
 
+qPrivateServer::qPrivateServer(QObject *parent)
+{
+    listen(QHostAddress::Any, port);
+}
+
+void qPrivateServer::incomingConnection(int socket)
+{
+    QSslSocket* s = new QSslSocket();
+    s->setSocketDescriptor(socket);
+
+    if(qUser* u = userList[s->peerAddress().toString()])
+    {
+        if(u->connected)
+        {
+            s->disconnect();
+            s->deleteLater();
+            return;
+        }
+        u->socket->deleteLater();
+        u->socket = s;
+//        s->setPathToCertificate("sslserver.pem");
+//        s->setPathToPrivateKey("sslserver.pem");
+        //s->setCaCertificates(PathToCACertDir("/etc/ssl/certs");
+        connect(s,SIGNAL(readyRead()),u,SLOT(processData()));
+        connect(s,SIGNAL(connected()),u,SLOT(connectReady()));
+        connect(s,SIGNAL(disconnected()),u,SLOT(disconnected()));
+        u->connected=true; //!!!!!!
+        s->startServerEncryption();
+    }
 }

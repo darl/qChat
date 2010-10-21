@@ -15,7 +15,7 @@ QUserListModel::QUserListModel(QObject *parent) :
 }
 
 
-Qt::ItemFlags QUserListModel::flags ( const QModelIndex & index ) const
+Qt::ItemFlags QUserListModel::flags ( const QModelIndex & /*index*/ ) const
 {
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 }
@@ -41,12 +41,12 @@ QVariant QUserListModel::data ( const QModelIndex & index, int role) const
     return QVariant::Invalid;
 }
 
-int QUserListModel::rowCount ( const QModelIndex & parent ) const
+int QUserListModel::rowCount ( const QModelIndex & /*parent*/ ) const
 {
     return userList.count();
 }
 
-QVariant QUserListModel::headerData ( int section, Qt::Orientation orientation, int role ) const
+QVariant QUserListModel::headerData ( int /*section*/, Qt::Orientation /*orientation*/, int /*role*/ ) const
 {
     return QString("");
 }

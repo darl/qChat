@@ -2,6 +2,7 @@
 #define QCHAT_H
 
 #include <QObject>
+#include <QTcpServer>
 #include "qTypes.h"
 
 class QUdpSocket;
@@ -18,7 +19,6 @@ class qGeneralChat:public QObject
 
 public:
     qGeneralChat(QObject * parent = 0);
-    virtual ~qGeneralChat();
     void sendMessage(const QString& msg);
 
 public slots:
@@ -36,6 +36,15 @@ private slots:
 private:
     QUdpSocket* globalSocket;
 
+};
+
+class qPrivateServer:public QTcpServer
+{
+    Q_OBJECT
+public:
+        qPrivateServer(QObject *parent = 0);
+
+        void incomingConnection(int socket);
 };
 
 #endif // QCHAT_H
