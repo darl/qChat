@@ -93,11 +93,12 @@ void QUserListModel::clearOfflineUsers()
     QHash<QString, qUser*>::iterator i = userList.begin();
     while (i != userList.end()) {
         qUser* u = *i;
-        if (u->lastCheck.msecsTo(QDateTime::currentDateTime())>=20000)
-        {    //20 секунд неактивности
-            u->status=usOffline;
-            emit nowOffline(u);
-        }
+        if(u->status!=usOffline)
+            if (u->lastCheck.msecsTo(QDateTime::currentDateTime())>=20000)
+            {    //20 секунд неактивности
+                u->status=usOffline;
+                emit nowOffline(u);
+            }
         ++i;
     }
     emit dataChanged(QModelIndex(),QModelIndex());
