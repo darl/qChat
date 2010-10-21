@@ -36,7 +36,7 @@ protected slots:
 
 
 signals:
-    void insertMessage(qint64 confID,QString& msg, bool insertTime, qUser* user);
+    void insertMessage(qint64 confID,const QString& msg, bool insertTime, qUser* user);
 
 public slots:
 
