@@ -161,7 +161,7 @@ qGeneralChat::qGeneralChat(QObject* obj) : QObject(obj)
 
 qPrivateServer::qPrivateServer(QObject */*parent*/)
 {
-    listen(QHostAddress::Any, port);
+    listen(QHostAddress::Any, port+1);
 }
 
 void qPrivateServer::incomingConnection(int socket)

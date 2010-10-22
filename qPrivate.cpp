@@ -5,6 +5,7 @@
 
 void qPrivate::sendClick()
 {
+    qDebug() << "send";
     qUser* u = userList["172.18.0.184"];
     if(!u) return;
     u->directConnect();

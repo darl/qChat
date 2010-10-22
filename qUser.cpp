@@ -2,6 +2,8 @@
 
 #include <QByteArray>
 
+//#include <QtDebug>
+
 #include "qConfig.h"
 
 qUser::qUser(QObject *obj): QObject(obj)
@@ -11,11 +13,19 @@ qUser::qUser(QObject *obj): QObject(obj)
     connect(socket,SIGNAL(readyRead()),this,SLOT(processData()));
     connect(socket,SIGNAL(connected()),this,SLOT(connectReady()));
     connect(socket,SIGNAL(disconnected()),this,SLOT(disconnected()));
+    connect(socket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(error1(QAbstractSocket::SocketError)));
 
+}
+
+void qUser::error1(QAbstractSocket::SocketError err)
+{
+    qDebug() << "error1";
+    qDebug() << err;
 }
 
 void qUser::connectReady()
 {
+    qDebug() <<"connected!";
     connected = true;
 }
 
@@ -42,6 +52,8 @@ void qUser::processData()
 
 void qUser::sendMessage(qint64 confID, const QString& msg)
 {
+    qDebug()<<connected;
+    qDebug()<<msg;
     if(!connected) return;
     QByteArray baMsg;
     baMsg.append(static_cast<char>(mtMessage));
@@ -53,7 +65,9 @@ void qUser::sendMessage(qint64 confID, const QString& msg)
 
 bool qUser::directConnect()
 {
+    qDebug() << connected;
     if(connected) return true;
+    qDebug() << "connect try";
     socket->connectToHostEncrypted(address.toString(),port+1);
     return false;
 }
