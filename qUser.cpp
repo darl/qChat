@@ -40,7 +40,7 @@ void qUser::processData()
     emit insertMessage(confID,msg_r,true,this);
 }
 
-void qUser::sendMessage(qint64 confID, QString& msg)
+void qUser::sendMessage(qint64 confID, const QString& msg)
 {
     if(!connected) return;
     QByteArray baMsg;

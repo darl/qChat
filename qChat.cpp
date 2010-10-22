@@ -159,7 +159,7 @@ qGeneralChat::qGeneralChat(QObject* obj) : QObject(obj)
 }
 
 
-qPrivateServer::qPrivateServer(QObject *parent)
+qPrivateServer::qPrivateServer(QObject */*parent*/)
 {
     listen(QHostAddress::Any, port);
 }

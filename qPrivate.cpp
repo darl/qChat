@@ -1,6 +1,15 @@
 #include "qPrivate.h"
 
 #include <QtGui>
+#include "qUserList.h"
+
+void qPrivate::sendClick()
+{
+    qUser* u = userList["172.18.0.184"];
+    if(!u) return;
+    u->directConnect();
+    u->sendMessage(12345678,tr("test123"));
+}
 
 qPrivate::qPrivate(QWidget *parent) :
     QDialog(parent)
@@ -56,6 +65,7 @@ qPrivate::qPrivate(QWidget *parent) :
     vl->setSpacing(0);
 
     connect(userListToggle,SIGNAL(toggled(bool)),userList,SLOT(setVisible(bool)));
+    connect(sendButton,SIGNAL(clicked()),this,SLOT(sendClick()));
 
     setWindowIcon(QIcon(":/conference"));
     setWindowTitle("Conference 0");

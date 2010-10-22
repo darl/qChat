@@ -20,7 +20,7 @@ public:
     QDateTime lastCheck;
     userStatus status;
 
-    void sendMessage(qint64 confID, QString& msg);
+    void sendMessage(qint64 confID, const QString& msg);
 
     bool directConnect();
     bool onlineCheck() {return (status!=usOffline); }

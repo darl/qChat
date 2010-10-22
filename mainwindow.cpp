@@ -40,7 +40,7 @@ void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
     if(end) chatArea->verticalScrollBar()->setValue(chatArea->verticalScrollBar()->maximum());
 }
 
-void MainWindow::insertMessage(qint64 confID,const QString& msg, bool insertTime, qUser* user)
+void MainWindow::insertMessage(qint64 /*confID*/,const QString& msg, bool insertTime, qUser* user)
 {
     insertMessage(msg,insertTime,user);
 }
@@ -255,6 +255,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(&userList,SIGNAL(nowOnline(qUser*)),this,SLOT(nowOnline(qUser*)));
     connect(&userList,SIGNAL(nowOffline(qUser*)),this,SLOT(nowOffline(qUser*)));
+
+    qPrivateServer ps(this);
 
     //вставка сообщения "qChat alpha - %hostname%"
     insertMessage(tr("<font color='gray'>qChat alpha - %1</font>").arg(QHostInfo::localHostName()));
