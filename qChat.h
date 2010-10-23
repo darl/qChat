@@ -42,9 +42,13 @@ class qPrivateServer:public QTcpServer
 {
     Q_OBJECT
 public:
-        qPrivateServer(QObject *parent = 0);
+    qPrivateServer(QObject *parent = 0);
 
-        void incomingConnection(int socket);
+    void incomingConnection(int socket);
+
+private slots:
+    void error1();
+
 };
 
 #endif // QCHAT_H

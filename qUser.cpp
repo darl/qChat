@@ -9,18 +9,19 @@
 qUser::qUser(QObject *obj): QObject(obj)
 {
     socket = new QSslSocket(this);
+    socket->ignoreSslErrors();
     connected = false;
     connect(socket,SIGNAL(readyRead()),this,SLOT(processData()));
     connect(socket,SIGNAL(connected()),this,SLOT(connectReady()));
     connect(socket,SIGNAL(disconnected()),this,SLOT(disconnected()));
     connect(socket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(error1(QAbstractSocket::SocketError)));
 
+
 }
 
 void qUser::error1(QAbstractSocket::SocketError err)
 {
-    qDebug() << "error1";
-    qDebug() << err;
+    qDebug() << "error1 " << err;
 }
 
 void qUser::connectReady()
@@ -52,9 +53,8 @@ void qUser::processData()
 
 void qUser::sendMessage(qint64 confID, const QString& msg)
 {
-    qDebug()<<connected;
     qDebug()<<msg;
-    if(!connected) return;
+    //if(!connected) return;
     QByteArray baMsg;
     baMsg.append(static_cast<char>(mtMessage));
     baMsg.append((char*)&confID,8);
@@ -68,6 +68,7 @@ bool qUser::directConnect()
     qDebug() << connected;
     if(connected) return true;
     qDebug() << "connect try";
+    qDebug() <<address.toString();
     socket->connectToHostEncrypted(address.toString(),port+1);
     return false;
 }

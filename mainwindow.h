@@ -10,6 +10,7 @@ class QPushButton;
 class qUser;
 class QUrl;
 class qGeneralChat;
+class qPrivateServer;
 
 class MainWindow : public QMainWindow
 {
@@ -29,6 +30,8 @@ private:
     void saveSettings();
 
     qGeneralChat* general;
+
+    qPrivateServer* ps;
 
 private slots:
     void insertMessage(const QString& msg, bool insertTime = false, qUser* user = NULL);

@@ -2,6 +2,7 @@
 
 #include <QtGui>
 #include <QtNetwork>
+ #include <QMessageBox>
 
 #include "qConfig.h"
 #include "qUserList.h"
@@ -159,16 +160,24 @@ qGeneralChat::qGeneralChat(QObject* obj) : QObject(obj)
 }
 
 
-qPrivateServer::qPrivateServer(QObject */*parent*/)
+qPrivateServer::qPrivateServer(QObject *parent) : QTcpServer(parent)
 {
     listen(QHostAddress::Any, port+1);
+    qDebug() << "server started";
+    qDebug() << port;
 }
 
 void qPrivateServer::incomingConnection(int socket)
 {
+    QMessageBox mb;
+    qDebug() << "new connection";
+
     QSslSocket* s = new QSslSocket();
     s->setSocketDescriptor(socket);
 
+
+    mb.setText("new connection "+s->peerAddress().toString());
+    mb.exec();
     if(qUser* u = userList[s->peerAddress().toString()])
     {
         if(u->connected)
@@ -179,13 +188,20 @@ void qPrivateServer::incomingConnection(int socket)
         }
         u->socket->deleteLater();
         u->socket = s;
+        s->ignoreSslErrors();
 //        s->setPathToCertificate("sslserver.pem");
 //        s->setPathToPrivateKey("sslserver.pem");
         //s->setCaCertificates(PathToCACertDir("/etc/ssl/certs");
         connect(s,SIGNAL(readyRead()),u,SLOT(processData()));
         connect(s,SIGNAL(connected()),u,SLOT(connectReady()));
         connect(s,SIGNAL(disconnected()),u,SLOT(disconnected()));
-        u->connected=true; //!!!!!!
+        //u->connected=true; //!!!!!!
         s->startServerEncryption();
     }
 }
+
+void qPrivateServer::error1()
+{
+    qDebug() << errorString();
+}
+

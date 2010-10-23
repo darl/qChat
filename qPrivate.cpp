@@ -5,11 +5,10 @@
 
 void qPrivate::sendClick()
 {
-    qDebug() << "send";
     qUser* u = userList["172.18.0.184"];
     if(!u) return;
     u->directConnect();
-    u->sendMessage(12345678,tr("test123"));
+    u->sendMessage(0,"dd1");
 }
 
 qPrivate::qPrivate(QWidget *parent) :

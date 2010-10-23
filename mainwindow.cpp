@@ -48,6 +48,7 @@ void MainWindow::insertMessage(qint64 /*confID*/,const QString& msg, bool insert
 //нажатие кнопки отправить
 void MainWindow::sendClick()
 {
+    qDebug() << ps->isListening();
     if(!msgLine->text().isEmpty())
         general->sendMessage(msgLine->text());
 
@@ -243,7 +244,7 @@ MainWindow::MainWindow(QWidget *parent)
     createUI();
 
 
-    general = new qGeneralChat(this);
+    general = new qGeneralChat();
     connect(general,SIGNAL(insertMessage(QString,bool,qUser*)),this,SLOT(insertMessage(QString,bool,qUser*)));
 
 
@@ -256,7 +257,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&userList,SIGNAL(nowOnline(qUser*)),this,SLOT(nowOnline(qUser*)));
     connect(&userList,SIGNAL(nowOffline(qUser*)),this,SLOT(nowOffline(qUser*)));
 
-    qPrivateServer ps(this);
+    ps = new qPrivateServer(this);
 
     //вставка сообщения "qChat alpha - %hostname%"
     insertMessage(tr("<font color='gray'>qChat alpha - %1</font>").arg(QHostInfo::localHostName()));
