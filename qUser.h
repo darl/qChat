@@ -26,7 +26,7 @@ public:
     bool onlineCheck() {return (status!=usOffline); }
 
 protected:
-    QSslSocket* socket;
+    QTcpSocket* socket;
     bool connected;
 
 protected slots:

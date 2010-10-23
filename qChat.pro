@@ -29,9 +29,6 @@ HEADERS += mainwindow.h \
 RESOURCES += \
         res.qrc
 
-win32 {
-    RC_FILE = ico.rc
-}
 
 FORMS += \
         qconfig.ui

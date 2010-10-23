@@ -8,7 +8,7 @@ void qPrivate::sendClick()
     qUser* u = userList["172.18.0.184"];
     if(!u) return;
     u->directConnect();
-    u->sendMessage(0,"dd1");
+    u->sendMessage(551,msgLine->text());
 }
 
 qPrivate::qPrivate(QWidget *parent) :
@@ -48,7 +48,7 @@ qPrivate::qPrivate(QWidget *parent) :
     szs<<100<<300;
     spl->setSizes(szs);
 
-    QLineEdit* msgLine = new QLineEdit(this);
+    msgLine = new QLineEdit(this);
     msgLine->setPlaceholderText(tr("Input message here"));
 
     QPushButton* sendButton = new QPushButton(QIcon(":/send"),tr("send"));

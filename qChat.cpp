@@ -2,7 +2,6 @@
 
 #include <QtGui>
 #include <QtNetwork>
- #include <QMessageBox>
 
 #include "qConfig.h"
 #include "qUserList.h"
@@ -169,15 +168,12 @@ qPrivateServer::qPrivateServer(QObject *parent) : QTcpServer(parent)
 
 void qPrivateServer::incomingConnection(int socket)
 {
-    QMessageBox mb;
     qDebug() << "new connection";
 
-    QSslSocket* s = new QSslSocket();
+    QTcpSocket* s = new QTcpSocket();
     s->setSocketDescriptor(socket);
 
 
-    mb.setText("new connection "+s->peerAddress().toString());
-    mb.exec();
     if(qUser* u = userList[s->peerAddress().toString()])
     {
         if(u->connected)
@@ -188,20 +184,21 @@ void qPrivateServer::incomingConnection(int socket)
         }
         u->socket->deleteLater();
         u->socket = s;
-        s->ignoreSslErrors();
-//        s->setPathToCertificate("sslserver.pem");
-//        s->setPathToPrivateKey("sslserver.pem");
+        //s->ignoreSslErrors();
+        //s->setLocalCertificate("qchat.csr");
+        //QSslConfiguration a;
+        //s->setPrivateKey("qchat.key");
+        //s->setSslConfiguration(a);
+        //s->setCiphers("DHE-RSA-AES256-SHA:DHE-DSS-AES256-SHA:AES256-SHA:EDH-RSA-DES-CBC3-SHA:EDH-DSS-DES-CBC3-SHA:DES-CBC3-SHA:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA:AES128-SHA:RC4-SHA:RC4-MD5:EDH-RSA-DES-CBC-SHA:EDH-DSS-DES-CBC-SHA:DES-CBC-SHA:EXP-EDH-RSA-DES-CBC-SHA:EXP-EDH-DSS-DES-CBC-SHA:EXP-DES-CBC-SHA:EXP-RC2-CBC-MD5:EXP-RC4-MD5");
+
         //s->setCaCertificates(PathToCACertDir("/etc/ssl/certs");
         connect(s,SIGNAL(readyRead()),u,SLOT(processData()));
         connect(s,SIGNAL(connected()),u,SLOT(connectReady()));
         connect(s,SIGNAL(disconnected()),u,SLOT(disconnected()));
+        connect(s,SIGNAL(error(QAbstractSocket::SocketError)),u,SLOT(error1(QAbstractSocket::SocketError)));
+        //connect(s,SIGNAL(sslErrors(QList<QSslError>)),u,SLOT(error2(QList<QSslError>)));
+        //connect(s,SIGNAL(encrypted()),u,SLOT(encryptReady()));
         //u->connected=true; //!!!!!!
-        s->startServerEncryption();
     }
-}
-
-void qPrivateServer::error1()
-{
-    qDebug() << errorString();
 }
 

@@ -47,7 +47,6 @@ public:
     void incomingConnection(int socket);
 
 private slots:
-    void error1();
 
 };
 
