@@ -8,7 +8,16 @@ enum messageType{
     mtOnlineWarning,
     mtOfflineWarning,
     mtSystemMessage,
-    mtBot
+    mtBot,
+    mtUpdateInfo,   //для автообновления в будущем
+
+    mtConferenceInfo,
+    mtConferenceInfoRequest,
+
+    mtPublicKey,
+    mtPublicKeyRequest,
+
+    mtEndMessageTypeEnum
 };
 
 enum userStatus
@@ -21,6 +30,7 @@ enum userStatus
     usCounterStrike=6,
     usDota,
     usQuake3,
+
     usQuiz
 };
 
