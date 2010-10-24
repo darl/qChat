@@ -1,5 +1,6 @@
 #include "qPrivate.h"
 
+#include "mt64.h"
 #include <QtGui>
 #include "qUserList.h"
 
@@ -69,4 +70,10 @@ qPrivate::qPrivate(QWidget *parent) :
 
     setWindowIcon(QIcon(":/conference"));
     setWindowTitle("Conference 0");
+}
+
+quint64 qPrivateList::generateID()
+{
+    //return 0;
+      return genrand64_int64();
 }

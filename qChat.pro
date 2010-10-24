@@ -12,11 +12,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        qChat.cpp \
         qUserList.cpp \
         qConfig.cpp \
         qPrivate.cpp \
-    qUser.cpp
+        qUser.cpp \
+    qChat.cpp \
+    mt64.cpp
 
 HEADERS += mainwindow.h \
         qChat.h \
@@ -24,7 +25,8 @@ HEADERS += mainwindow.h \
         qConfig.h \
         qTypes.h \
         qPrivate.h \
-    qUser.h
+        qUser.h \
+    mt64.h
 
 RESOURCES += \
         res.qrc
