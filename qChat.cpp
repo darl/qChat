@@ -7,29 +7,6 @@
 #include "qUserList.h"
 #include "qUser.h"
 
-QIcon statusIcons(userStatus st)
-{
-    switch(st)
-    {
-    case usOnline:
-        return QIcon(":/online");
-    case usAway:
-        return QIcon(":/away");
-    case usBusy:
-        return QIcon(":/busy");
-    case usOffline:
-        return QIcon(":/offline");
-    case usCounterStrike:
-        return QIcon(":/cs");
-    case usDota:
-        return QIcon(":/dota");
-    case usQuake3:
-        return QIcon(":/q3");
-    default:
-        return QIcon(":/unknown");
-    }
-}
-
 QString statusIconsStr(userStatus st)
 {
     switch(st)
@@ -48,10 +25,18 @@ QString statusIconsStr(userStatus st)
         return (":/dota");
     case usQuake3:
         return (":/q3");
+    case usQuiz:
+        return (":/quiz");
     default:
         return (":/unknown");
     }
 }
+
+QIcon statusIcons(userStatus st)
+{
+    return QIcon(statusIconsStr(st));
+}
+
 
 void qGeneralChat::processData()
 {

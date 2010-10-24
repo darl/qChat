@@ -40,7 +40,7 @@ void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
     if(end) chatArea->verticalScrollBar()->setValue(chatArea->verticalScrollBar()->maximum());
 }
 
-void MainWindow::insertMessage(qint64 /*confID*/,const QString& msg, bool insertTime, qUser* user)
+void MainWindow::insertMessage(quint64 /*confID*/,const QString& msg, bool insertTime, qUser* user)
 {
     insertMessage(msg,insertTime,user);
 }
@@ -112,7 +112,7 @@ void MainWindow::exitClick()
 
 void MainWindow::nowOnline(qUser* u)
 {
-    connect(u,SIGNAL(insertMessage(qint64,QString,bool,qUser*)),this,SLOT(insertMessage(qint64,QString,bool,qUser*)));
+    connect(u,SIGNAL(insertMessage(qint64,QString,bool,qUser*)),this,SLOT(insertMessage(qint64,QString,bool,qUser*)),Qt::UniqueConnection);
     insertMessage(tr("<font color='gray'>%1 has come online</font>").arg(u->nick),true,NULL);
 }
 
