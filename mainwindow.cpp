@@ -112,7 +112,7 @@ void MainWindow::exitClick()
 
 void MainWindow::nowOnline(qUser* u)
 {
-    connect(u,SIGNAL(insertMessage(qint64,QString,bool,qUser*)),this,SLOT(insertMessage(qint64,QString,bool,qUser*)),Qt::UniqueConnection);
+    connect(u,SIGNAL(insertMessage(quint64,QString,bool,qUser*)),this,SLOT(insertMessage(quint64,QString,bool,qUser*)),Qt::UniqueConnection);
     insertMessage(tr("<font color='gray'>%1 has come online</font>").arg(u->nick),true,NULL);
 }
 

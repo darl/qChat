@@ -37,7 +37,6 @@ QIcon statusIcons(userStatus st)
     return QIcon(statusIconsStr(st));
 }
 
-
 void qGeneralChat::processData()
 {
     while (globalSocket->hasPendingDatagrams())

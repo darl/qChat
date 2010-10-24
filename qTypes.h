@@ -19,8 +19,9 @@ enum userStatus
     usOffline,
 
     usCounterStrike=6,
-    usDota=7,
-    usQuake3
+    usDota,
+    usQuake3,
+    usQuiz
 };
 
 #endif // QTYPES_H

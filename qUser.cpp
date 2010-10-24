@@ -44,7 +44,7 @@ void qUser::processData()
 
     messageType mt = static_cast<messageType>(msg.at(0));
 
-    qint64 confID = *((qint64*)(msg.data()+1));//magic
+    quint64 confID = *((quint64*)(msg.data()+1));//magic
 
     msg.remove(0,9);
     QString msg_r;
@@ -52,7 +52,7 @@ void qUser::processData()
     emit insertMessage(confID,msg_r,true,this);
 }
 
-void qUser::sendMessage(qint64 confID, const QString& msg)
+void qUser::sendMessage(quint64 confID, const QString& msg)
 {
     qDebug()<<msg;
     //if(!connected) return;

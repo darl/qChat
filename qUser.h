@@ -20,7 +20,7 @@ public:
     QDateTime lastCheck;
     userStatus status;
 
-    void sendMessage(qint64 confID, const QString& msg);
+    void sendMessage(quint64 confID, const QString& msg);
 
     bool directConnect();
     bool onlineCheck() {return (status!=usOffline); }
@@ -36,7 +36,7 @@ protected slots:
     void error1(QAbstractSocket::SocketError);
 
 signals:
-    void insertMessage(qint64 confID,const QString& msg, bool insertTime, qUser* user);
+    void insertMessage(quint64 confID,const QString& msg, bool insertTime, qUser* user);
 
 public slots:
 
