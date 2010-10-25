@@ -43,7 +43,6 @@ void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
 //нажатие кнопки отправить
 void MainWindow::sendClick()
 {
-    qDebug() << ps->isListening();
     if(!msgLine->text().isEmpty())
         general->sendMessage(msgLine->text());
 
