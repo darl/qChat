@@ -35,7 +35,6 @@ private:
 
 private slots:
     void insertMessage(const QString& msg, bool insertTime = false, qUser* user = NULL);
-    void insertMessage(quint64 confID ,const QString& msg, bool insertTime = false, qUser* user = NULL);
 
     void nowOnline(qUser* u);
     void nowOffline(qUser* u);

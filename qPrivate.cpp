@@ -9,7 +9,8 @@ void qPrivate::sendClick()
     qUser* u = userList["172.18.0.184"];
     if(!u) return;
     u->directConnect();
-    u->sendMessage(551,msgLine->text());
+    u->sendMessage(confID,msgLine->text());
+    msgLine->clear();
 }
 
 qPrivate::qPrivate(QWidget *parent) :
@@ -72,8 +73,28 @@ qPrivate::qPrivate(QWidget *parent) :
     setWindowTitle("Conference 0");
 }
 
+qPrivate::qPrivate(quint64 id, QList<qUser *> l)
+{
+
+}
+
 quint64 qPrivateList::generateID()
 {
-    //return 0;
       return genrand64_int64();
+}
+
+bool qPrivateList::privateWindowExist(quint64 confID)
+{
+    return confList.contains(confID);
+}
+
+qPrivate* qPrivateList::getPrivateWindow(quint64 confID)
+{
+
+}
+
+qPrivate* qPrivateList::getPrivateWindow(const QList<qUser*>& confUserList)
+{
+
+
 }

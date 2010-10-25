@@ -46,10 +46,14 @@ void qUser::processData()
 
     quint64 confID = *((quint64*)(msg.data()+1));//magic
 
+    //if(!exist(confID))
+    // sendConfInfoRequest(socket.peerAddress);
+    //
+    //w = getprivatewindow(confID);
+    //
+
     msg.remove(0,9);
-    QString msg_r;
-    msg_r = tr("PRIVATE(%2): %1").arg(QString(msg)).arg(confID);
-    emit insertMessage(confID,msg_r,true,this);
+    //w -> insertMessage(QString(msg));
 }
 
 void qUser::sendMessage(quint64 confID, const QString& msg)

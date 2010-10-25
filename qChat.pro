@@ -16,8 +16,8 @@ SOURCES += main.cpp\
         qConfig.cpp \
         qPrivate.cpp \
         qUser.cpp \
-    qChat.cpp \
-    mt64.cpp
+        qChat.cpp \
+        mt64.cpp
 
 HEADERS += mainwindow.h \
         qChat.h \
@@ -26,7 +26,7 @@ HEADERS += mainwindow.h \
         qTypes.h \
         qPrivate.h \
         qUser.h \
-    mt64.h
+        mt64.h
 
 RESOURCES += \
         res.qrc

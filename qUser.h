@@ -36,7 +36,7 @@ protected slots:
     void error1(QAbstractSocket::SocketError);
 
 signals:
-    void insertMessage(quint64 confID,const QString& msg, bool insertTime, qUser* user);
+    //void insertMessage(quint64 confID,const QString& msg, bool insertTime, qUser* user);
 
 public slots:
 
