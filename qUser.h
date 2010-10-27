@@ -25,6 +25,8 @@ public:
     bool directConnect();
     bool onlineCheck() {return (status!=usOffline); }
 
+    static qUser* local();
+
 protected:
     QTcpSocket* socket;
     bool connected;

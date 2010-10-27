@@ -11,6 +11,7 @@ class qUser;
 class QUrl;
 class qGeneralChat;
 class qPrivateServer;
+class QListView;
 
 class MainWindow : public QMainWindow
 {
@@ -21,6 +22,7 @@ private:
     QLineEdit* msgLine;
     QPushButton* sendButton;
     QSystemTrayIcon* tray;
+    QListView* onlineList;
 
     void createUI();
     void createTray();

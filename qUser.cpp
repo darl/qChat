@@ -5,6 +5,8 @@
 #include <QMessageBox>
 
 #include "qConfig.h"
+#include "qPrivate.h"
+#include "qUserList.h"
 
 qUser::qUser(QObject *obj): QObject(obj)
 {
@@ -41,19 +43,29 @@ void qUser::processData()
 {
     QByteArray msg(socket->readAll());
 
-
     messageType mt = static_cast<messageType>(msg.at(0));
+    msg.remove(0,1);
 
     quint64 confID = *((quint64*)(msg.data()+1));//magic
+    msg.remove(0,8);
 
     //if(!exist(confID))
     // sendConfInfoRequest(socket.peerAddress);
     //
-    //w = getprivatewindow(confID);
+    qPrivate* w = privateList.getPrivateWindow(confID);
     //
 
-    msg.remove(0,9);
-    //w -> insertMessage(QString(msg));
+    w->insertMessage(QString(msg),true,this);
+}
+
+qUser* qUser::local()
+{
+    QList<QHostAddress> la = QHostInfo::fromName(QHostInfo::localHostName()).addresses();
+
+    for(QList<QHostAddress>::iterator i = la.begin();i!=la.end();i++)
+        if(userList[i->toString()])
+            return userList[i->toString()];
+    return 0;
 }
 
 void qUser::sendMessage(quint64 confID, const QString& msg)
@@ -64,7 +76,8 @@ void qUser::sendMessage(quint64 confID, const QString& msg)
     baMsg.append(static_cast<char>(mtMessage));
     baMsg.append((char*)&confID,8);
     baMsg.append(msg);
-    socket->write(baMsg);
+    if(socket->waitForConnected(100))
+        socket->write(baMsg);
 }
 
 bool qUser::directConnect()

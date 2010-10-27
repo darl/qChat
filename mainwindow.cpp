@@ -58,7 +58,28 @@ void MainWindow::refreshClick()
 
 void MainWindow::conferenceClick()
 {
-    qPrivate* wnd = new qPrivate();
+    QList<QModelIndex> mil(onlineList->selectionModel()->selectedIndexes());
+    QList<qUser*> ul;
+    QList<QModelIndex>::iterator i;
+    QList<QHostAddress> la = QHostInfo::fromName(QHostInfo::localHostName()).addresses();
+    for(i = mil.begin();i!=mil.end();i++)
+    {
+        qUser* u = userList[i->data(Qt::ToolTipRole).toString()];
+        if(!u) continue;    //на всякий случай
+
+        if(la.contains(u->address)) //выделен локальный пользователь
+            continue;
+
+        ul.append(u);
+    }
+
+    if(ul.isEmpty())
+    {
+        //сообщить об ошибке
+        QMessageBox::warning(this,"Conference","Need to select at least one non local person");
+        return;
+    }
+    qPrivate* wnd = privateList.getPrivateWindow(ul);
     wnd->show();
 }
 
@@ -153,7 +174,7 @@ void MainWindow::createUI()
     tb->addWidget(sendButton);
     addToolBar(Qt::BottomToolBarArea,tb);
 
-    QListView* onlineList = new QListView(this);
+    onlineList = new QListView(this);
     onlineList->setUniformItemSizes(true);
     onlineList->setSelectionMode(QAbstractItemView::ExtendedSelection);
     onlineList->setModel(&userList);
