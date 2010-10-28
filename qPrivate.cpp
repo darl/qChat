@@ -159,25 +159,27 @@ qPrivate* qPrivateList::getPrivateWindow(quint64 confID)
 
 qPrivate* qPrivateList::getPrivateWindow(const QList<qUser*>& confUserList)
 {
+    qUser* u;
+
     for(QHash<quint64, qPrivate*>::iterator i = confList.begin(); i != confList.end(); i++)
     {
         qPrivate* w = i.value();
         bool ok = true;
-        qUser* u;
-        foreach(u, confUserList)
-        {
-            if(!w->confUserList.contains(u))
-            {
-                ok = false;
-                break;
-            }
-        }
+
+
         if(ok)
             return w;
     }
+
     quint64 confID = generateID();
     qPrivate* w = new qPrivate(confID, confUserList);
     confList.insert(confID,w);
+
+    foreach(u, confUserList)
+    {
+        u->sendConfInfo(confID);
+    }
+
     return w;
 }
 

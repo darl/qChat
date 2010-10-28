@@ -12,14 +12,13 @@
 qUser::qUser(QObject *obj): QObject(obj)
 {
     socket = new QTcpSocket(this);
-    //socket->ignoreSslErrors();
+
     connected = false;
     connect(socket,SIGNAL(readyRead()),this,SLOT(processData()));
     connect(socket,SIGNAL(connected()),this,SLOT(connectReady()));
     connect(socket,SIGNAL(disconnected()),this,SLOT(disconnected()));
     connect(socket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(error1(QAbstractSocket::SocketError)));
-   // connect(socket,SIGNAL(sslErrors(QList<QSslError>)),this,SLOT(error2(QList<QSslError>)));
-   // connect(socket,SIGNAL(encrypted()),this,SLOT(encryptReady()));
+
 }
 
 void qUser::error1(QAbstractSocket::SocketError err)
@@ -66,6 +65,7 @@ void qUser::processData()
     case mtConferenceInfo:
         {
             QTextStream strm(msg);
+            qDebug() <<msg;
             QList<qUser*> ul;
             QString line;
             qUser* u;
@@ -155,12 +155,16 @@ void qUser::sendConfInfo(quint64 confID)
     QByteArray baMsg;
     baMsg.append(static_cast<char>(mtConferenceInfo));
     baMsg.append((char*)&confID,8);
-    QTextStream strm(baMsg);
+    qDebug() <<baMsg;
+
 
     qUser* u;
     foreach(u,ul)
-        strm << u->address.toString();
+    {
+        baMsg.append(u->address.toString()+"\n");
+    }
 
+    qDebug() <<baMsg;
     if(socket->waitForConnected(100))
         socket->write(baMsg);
 }
