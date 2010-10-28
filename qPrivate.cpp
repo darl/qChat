@@ -124,7 +124,6 @@ qPrivate::qPrivate(quint64 id, const QList<qUser*>& l) : QDialog(0), confID(id),
     {
         new QListWidgetItem(statusIcons(u->status),u->nick,users);
         u->directConnect(); //заранее подключаемся
-        //u->sendConfInfo(); //отправляем информацию о конференции
         setWindowTitle(windowTitle()+" "+u->nick);
     }
 }
@@ -166,7 +165,6 @@ qPrivate* qPrivateList::getPrivateWindow(const QList<qUser*>& confUserList)
         qPrivate* w = i.value();
         bool ok = true;
 
-
         if(ok)
             return w;
     }
@@ -175,6 +173,7 @@ qPrivate* qPrivateList::getPrivateWindow(const QList<qUser*>& confUserList)
     qPrivate* w = new qPrivate(confID, confUserList);
     confList.insert(confID,w);
 
+    //т.к. в sendConfInfo идет обращение к списку окон, вызов этого метода должен быть после добавления окна с конференцией
     foreach(u, confUserList)
     {
         u->sendConfInfo(confID);

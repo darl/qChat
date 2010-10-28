@@ -70,7 +70,6 @@ void qGeneralChat::processData()
             emit insertMessage(tr("<font color='red'>%1</font>").arg(datagram.data()),true,NULL);
             break;
         case mtBot:
-            emit insertMessage(QString::number(us),true,NULL);// для отладки с одним нехорошим человеком
             emit insertMessage(tr("<font color='#005500'><img src='%2'>%1</font>").arg(datagram.data()).arg(statusIconsStr(us)),true,NULL);
             break;
         default:
@@ -146,14 +145,10 @@ qGeneralChat::qGeneralChat(QObject* obj) : QObject(obj)
 qPrivateServer::qPrivateServer(QObject *parent) : QTcpServer(parent)
 {
     listen(QHostAddress::Any, port+1);
-    qDebug() << "server started";
-    qDebug() << port;
 }
 
 void qPrivateServer::incomingConnection(int socket)
 {
-    qDebug() << "new connection";
-
     QTcpSocket* s = new QTcpSocket();
     s->setSocketDescriptor(socket);
 
@@ -173,7 +168,7 @@ void qPrivateServer::incomingConnection(int socket)
         connect(s,SIGNAL(connected()),u,SLOT(connectReady()));
         connect(s,SIGNAL(disconnected()),u,SLOT(disconnected()));
         connect(s,SIGNAL(error(QAbstractSocket::SocketError)),u,SLOT(error1(QAbstractSocket::SocketError)));
-        u->connected=true; //!!!!!!
+        u->connected=true;
     }
 }
 

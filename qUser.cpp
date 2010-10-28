@@ -109,7 +109,6 @@ void qUser::processData()
         qWarning() << "undifined message type";
     }
 
-
 }
 
 qUser* qUser::local()
@@ -125,7 +124,6 @@ qUser* qUser::local()
 void qUser::sendMessage(quint64 confID, const QString& msg)
 {
     qDebug()<<msg;
-    //if(!connected) return;
     QByteArray baMsg;
     baMsg.append(static_cast<char>(mtMessage));
     baMsg.append((char*)&confID,8);
@@ -155,8 +153,6 @@ void qUser::sendConfInfo(quint64 confID)
     QByteArray baMsg;
     baMsg.append(static_cast<char>(mtConferenceInfo));
     baMsg.append((char*)&confID,8);
-    qDebug() <<baMsg;
-
 
     qUser* u;
     foreach(u,ul)
@@ -164,7 +160,6 @@ void qUser::sendConfInfo(quint64 confID)
         baMsg.append(u->address.toString()+"\n");
     }
 
-    qDebug() <<baMsg;
     if(socket->waitForConnected(100))
         socket->write(baMsg);
 }
@@ -172,7 +167,6 @@ void qUser::sendConfInfo(quint64 confID)
 bool qUser::directConnect()
 {
     if(connected) return true;
-    qDebug() << "connect try "<<address.toString();
     socket->connectToHost(address.toString(),port+1);
     return false;
 }
