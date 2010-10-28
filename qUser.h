@@ -21,9 +21,11 @@ public:
     userStatus status;
 
     void sendMessage(quint64 confID, const QString& msg);
+    void sendConfInfoRequest(quint64 confID);
+    void sendConfInfo(quint64 confID);
 
     bool directConnect();
-    bool onlineCheck() {return (status!=usOffline); }
+    bool onlineCheck() {return (status!=usOffline); } //нужно ли?
 
     static qUser* local();
 
@@ -38,7 +40,6 @@ protected slots:
     void error1(QAbstractSocket::SocketError);
 
 signals:
-    //void insertMessage(quint64 confID,const QString& msg, bool insertTime, qUser* user);
 
 public slots:
 

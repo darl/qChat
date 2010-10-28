@@ -19,7 +19,7 @@ void qPrivate::sendClick()
     }
 
     if(notConnectedWarn)
-        insertMessage("<img src=':/warninig'>"+msgLine->text(),true,qUser::local());
+        insertMessage("<img src=':/warning'>"+msgLine->text(),true,qUser::local());
     else
         insertMessage(msgLine->text(),true,qUser::local());
 
