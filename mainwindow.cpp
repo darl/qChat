@@ -9,6 +9,7 @@
 #include "qUserList.h"
 #include "qPrivate.h"
 #include "qConfig.h"
+#include "mt64.h"
 
 void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
 {
@@ -282,6 +283,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     general->sendOnlineWarning();
     general->sendWhoRequest();
+
+    //инициализация генератора числом миллисекунд с 1970 года
+    init_genrand64(QDateTime::currentDateTime().currentMSecsSinceEpoch());
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

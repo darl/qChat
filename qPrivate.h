@@ -15,12 +15,11 @@ class qPrivate : public QDialog
     Q_OBJECT
 public:
     friend class qUser;
-    explicit qPrivate(QWidget *parent = 0);
+
     qPrivate(quint64 id, const QList<qUser*>& l);
+
     quint64 confID;
     QList<qUser*> confUserList;
-
-signals:
 
 public slots:
     void sendClick();
