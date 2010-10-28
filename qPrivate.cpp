@@ -19,9 +19,9 @@ void qPrivate::sendClick()
     }
 
     if(notConnectedWarn)
-        insertMessage("<font color='gray'>Probably this message hasn't been delivered:</font>");
-    insertMessage(msgLine->text(),true,qUser::local());
-
+        insertMessage("<img src=':/warninig'>"+msgLine->text(),true,qUser::local());
+    else
+        insertMessage(msgLine->text(),true,qUser::local());
 
     msgLine->clear();
     msgLine->setFocus();

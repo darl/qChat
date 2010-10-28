@@ -18,5 +18,6 @@
         <file alias="q3">media/png/q3.png</file>
         <file alias="unknown">media/png/user-silhouette-question.png</file>
         <file alias="quiz">media/png/help-contents.png</file>
+        <file alias="warning">media/png/exclamation-diamond.png</file>
     </qresource>
 </RCC>

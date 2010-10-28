@@ -83,10 +83,7 @@ void qUser::sendMessage(quint64 confID, const QString& msg)
 bool qUser::directConnect()
 {
     if(connected) return true;
-    qDebug() << "connect try";
-    qDebug() <<address.toString();
-    //socket->setLocalCertificate("qchat.csr");
-    //socket->setPrivateKey("qchat.key");
+    qDebug() << "connect try "<<address.toString();
     socket->connectToHost(address.toString(),port+1);
     return false;
 }
