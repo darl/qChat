@@ -35,6 +35,9 @@ private:
 
     qPrivateServer* ps;
 
+    QList<QString> previusMessages;
+    QList<QString>::iterator currentMessage;
+
 private slots:
     void insertMessage(const QString& msg, bool insertTime = false, qUser* user = NULL);
 
@@ -53,6 +56,7 @@ private slots:
 
 protected:
     void closeEvent(QCloseEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event);
 
 public:
     MainWindow(QWidget *parent = 0);

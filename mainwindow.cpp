@@ -16,9 +16,6 @@ void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
     QString addMsg = "";
     QString originalMsg = msg;
 
-    if(chatArea->toPlainText().size()!=0)
-        addMsg += "<br>";
-
     if(insertTime)
         addMsg+=tr("<font color='gray'>%1</font> ").arg(QTime::currentTime().toString());
 
@@ -30,13 +27,12 @@ void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
         addMsg+=tr("<a href='qchat://%1'><b>%2</b></a>: ").arg(user->address.toString()).arg(user->nick);
     }
 
+
     addMsg+=originalMsg;
 
     bool buttom = (chatArea->verticalScrollBar()->value() == chatArea->verticalScrollBar()->maximum());
 
-    QTextCursor c = chatArea->textCursor();
-    c.movePosition(QTextCursor::End);
-    c.insertHtml(addMsg);
+    chatArea->append(addMsg);
 
     if(buttom) chatArea->verticalScrollBar()->setValue(chatArea->verticalScrollBar()->maximum());
 }
@@ -45,7 +41,14 @@ void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
 void MainWindow::sendClick()
 {
     if(!msgLine->text().isEmpty())
+    {
+        if(previusMessages.contains(msgLine->text()))
+            previusMessages.removeAll(msgLine->text());
+        previusMessages.push_back(msgLine->text());
+        currentMessage = previusMessages.end();
+
         general->sendMessage(msgLine->text());
+    }
 
     msgLine->clear();
     msgLine->setFocus();
@@ -140,8 +143,10 @@ void MainWindow::createUI()
 {
     chatArea = new QTextBrowser(this);
     chatArea->setOpenExternalLinks(true);   //ссылки будут открываться внешне, а не будут пытаться открыться внутри виджета
-    QDesktopServices::setUrlHandler("qchat",this,"linkClick"); //это какая-то магия...
+    QDesktopServices::setUrlHandler("qchat",this,"linkClick"); //нажатие на имя пользователя
+    QDesktopServices::setUrlHandler("qbot",this,"");   //нажатие на 'more' в сообщении бота
     chatArea->setFocusPolicy(Qt::ClickFocus);
+    chatArea->document()->setMaximumBlockCount(2000);
 
     QToolBar* bb = new QToolBar(tr("Button bar"));
     bb->setObjectName("buttonBar");
@@ -165,6 +170,7 @@ void MainWindow::createUI()
 
     msgLine = new QLineEdit(this);
     msgLine->setPlaceholderText(tr("Input message here"));
+    msgLine->installEventFilter(this);
 
     sendButton = new QPushButton(QIcon(":/send"),tr("send"));
     sendButton->setFocusPolicy(Qt::NoFocus);
@@ -231,6 +237,7 @@ void MainWindow::createTimers()
 
 void MainWindow::loadSettings()
 {
+    //восстановление настроек
     QSettings settings("qChat");
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
@@ -250,7 +257,6 @@ void MainWindow::saveSettings()
     settings.setValue("status",status);
     settings.setValue("broadcast",broadcast.toString());
     settings.setValue("port",port);
-    //тестовые функции не сохраняются
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -292,6 +298,55 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     hide();
     event->ignore();
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    if(obj == msgLine)
+        if (event->type() == QEvent::KeyPress)
+        {
+            QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+            switch(keyEvent->key())
+            {
+            case Qt::Key_Up:
+                if(previusMessages.isEmpty())
+                    return true;
+                if(currentMessage != previusMessages.begin())
+                    currentMessage--;
+                else
+                    currentMessage = previusMessages.end();
+
+                if(currentMessage != previusMessages.end())
+                {
+                    msgLine->setText(*currentMessage);
+                    msgLine->selectAll();
+                }
+                else
+                    msgLine->clear();
+                return true;
+            case Qt::Key_Down:
+                if(previusMessages.isEmpty())
+                    return true;
+                if(currentMessage != previusMessages.end())
+                    currentMessage++;
+                else
+                    currentMessage = previusMessages.begin();
+
+                if(currentMessage != previusMessages.end())
+                {
+                    msgLine->setText(*currentMessage);
+                    msgLine->selectAll();
+                }
+                else
+                    msgLine->clear();
+                return true;
+            default:
+                return QObject::eventFilter(obj, event);
+            }
+
+        }
+    // standard event processing
+    return QObject::eventFilter(obj, event);
 }
 
 MainWindow::~MainWindow()
