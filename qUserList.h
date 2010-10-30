@@ -13,20 +13,15 @@ class QUserListModel : public QAbstractListModel
 {
     Q_OBJECT
 
-protected:
-    QHash<QString,qUser*> userList;
-
 public:
     explicit QUserListModel(QObject *parent = 0);
+
     Qt::ItemFlags flags ( const QModelIndex & index ) const;
     QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
     int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
     QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
-    void updateUser(QHostAddress addr, QString nick, userStatus us);
-    void removeUser(QHostAddress addr);
-
-
+    //для прозрачной работы с хеш таблицей
     qUser* operator[] (const QString& n);
 
 signals:
@@ -35,7 +30,12 @@ signals:
     void nowOffline(qUser* u);
 
 public slots:
+    void updateUser(QHostAddress addr, QString nick, userStatus us);
+    void removeUser(QHostAddress addr);
     void clearOfflineUsers();
+
+protected:
+    QHash<QString,qUser*> userList;
 };
 
 extern QUserListModel userList;

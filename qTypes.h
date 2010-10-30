@@ -15,9 +15,7 @@ enum messageType{
     mtConferenceInfoRequest,
 
     mtPublicKey,
-    mtPublicKeyRequest,
-
-    mtEndMessageTypeEnum
+    mtPublicKeyRequest
 };
 
 enum userStatus

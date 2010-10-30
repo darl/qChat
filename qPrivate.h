@@ -13,43 +13,51 @@ class QTextBrowser;
 class qPrivate : public QDialog
 {
     Q_OBJECT
-public:
+
     friend class qUser;
 
+public:
     qPrivate(quint64 id, const QList<qUser*>& l);
-
-    quint64 confID;
-    QList<qUser*> confUserList;
-
-public slots:
-    void sendClick();
 
 protected:
     QLineEdit* msgLine;
     QListWidget* users;
     QTextBrowser* chatArea;
 
+    QList<qUser*> confUserList;
+    quint64 confID;
+
     void initUI();
     void insertMessage(const QString& msg, bool insertTime = false, qUser* user = 0);
 
     void closeEvent(QCloseEvent *event);
+
+private slots:
+    void sendClick();
 };
 
 class qPrivateList
 {
+public:
+    //проверка на наличие
+    bool privateWindowExist(quint64 confID);
+
+    //возвращает указатель на окно или создает новое
+    //вызывается, когда по сети пришло сообщение.
+    //если окно создано, то оно готово для добавления сообщения
+    //вызвавший должен сам заполнить список
+    qPrivate* getPrivateWindow(quint64 confID);
+
+    //возвращает указатель на окно или создает новое
+    //принимает список пользователей
+    //вызывается из главного окна
+    qPrivate* getPrivateWindow(const QList<qUser*>& confUserList);
+
 private:
     QHash<quint64, qPrivate*> confList;
 
+    //генерация псевдослучайного числа(quint64)
     quint64 generateID();
-
-public:
-    bool privateWindowExist(quint64 confID);        //проверка на наличие
-    qPrivate* getPrivateWindow(quint64 confID);     //возвращает указатель на окно или создает новое
-                                                    //вызывается, когда по сети пришло сообщение.
-                                                    //если окно создано, то оно готово для добавления сообщения
-                                                    //вызвавший должен сам заполнить список
-    qPrivate* getPrivateWindow(const QList<qUser*>& confUserList);  //возвращает указатель на окно или создает новое
-                                                                    //вызывается из главного окна
 };
 
 extern qPrivateList privateList;

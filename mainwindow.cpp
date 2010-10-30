@@ -13,11 +13,11 @@
 
 void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
 {
-    QString addMsg;
+    QString addMsg = "";
     QString originalMsg = msg;
 
     if(chatArea->toPlainText().size()!=0)
-        addMsg+=tr("<br>");
+        addMsg += "<br>";
 
     if(insertTime)
         addMsg+=tr("<font color='gray'>%1</font> ").arg(QTime::currentTime().toString());
@@ -32,13 +32,13 @@ void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
 
     addMsg+=originalMsg;
 
-    bool end = (chatArea->verticalScrollBar()->value() == chatArea->verticalScrollBar()->maximum());
+    bool buttom = (chatArea->verticalScrollBar()->value() == chatArea->verticalScrollBar()->maximum());
 
     QTextCursor c = chatArea->textCursor();
     c.movePosition(QTextCursor::End);
     c.insertHtml(addMsg);
 
-    if(end) chatArea->verticalScrollBar()->setValue(chatArea->verticalScrollBar()->maximum());
+    if(buttom) chatArea->verticalScrollBar()->setValue(chatArea->verticalScrollBar()->maximum());
 }
 
 //нажатие кнопки отправить

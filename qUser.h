@@ -11,8 +11,9 @@ class qUser:public QObject
 {
     Q_OBJECT
 
-public:
     friend class qPrivateServer;
+
+public:
     qUser(QObject* obj = 0);
 
     QHostAddress address;
@@ -25,8 +26,8 @@ public:
     void sendConfInfo(quint64 confID);
 
     bool directConnect();
-    bool onlineCheck() {return (status!=usOffline); } //нужно ли?
 
+    //указатель на локального пользователя
     static qUser* local();
 
 protected:
@@ -38,10 +39,5 @@ protected slots:
     void connectReady();
     void disconnected();
     void error1(QAbstractSocket::SocketError);
-
-signals:
-
-public slots:
-
 };
 #endif // QUSER_H

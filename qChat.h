@@ -10,8 +10,8 @@ class QString;
 class QIcon;
 class qUser;
 
+//получение иконки из статуса
 QIcon statusIcons(userStatus st);
-//unsigned char us2c(userStatus st) {return static_cast<unsigned char>(st);};
 
 class qGeneralChat:public QObject
 {
@@ -19,13 +19,14 @@ class qGeneralChat:public QObject
 
 public:
     qGeneralChat(QObject * parent = 0);
-    void sendMessage(const QString& msg);
 
 public slots:
     void sendWhoRequest();
     void sendOnlinePing();
     void sendOnlineWarning();
     void sendOfflineWarning();
+
+    void sendMessage(const QString& msg);
 
 signals:
     void insertMessage(const QString& msg, bool insertTime, qUser* user);
@@ -35,7 +36,6 @@ private slots:
 
 private:
     QUdpSocket* globalSocket;
-
 };
 
 class qPrivateServer:public QTcpServer
@@ -45,9 +45,6 @@ public:
     qPrivateServer(QObject *parent = 0);
 
     void incomingConnection(int socket);
-
-private slots:
-
 };
 
 #endif // QCHAT_H

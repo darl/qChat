@@ -32,18 +32,6 @@ void qConfig::showEvent ( QShowEvent * event )
     QDialog::showEvent(event);
 }
 
-quint16 port = 49675;                                   //default port
-QHostAddress broadcast("172.18.255.255");               //broadcasting mask
-
-QString nick = QHostInfo::localHostName();              //default Nickname
-userStatus status = usOnline;
-
-bool invisibleMode = false;
-bool htmlTags = false;
-bool showOfflineUsers = false;
-
-qConfig* configDialog;
-
 void qConfig::apply()
 {
     broadcast.setAddress(ui->addressEdit->text());
@@ -57,3 +45,15 @@ void qConfig::apply()
     htmlTags = ui->htmlTagsEdit->isChecked();
     showOfflineUsers = ui->offlineUsersEdit->isChecked();
 }
+
+quint16 port = 49675;                                   //default port
+QHostAddress broadcast("172.18.255.255");               //broadcasting mask
+
+QString nick = QHostInfo::localHostName();              //default Nickname
+userStatus status = usOnline;
+
+bool invisibleMode = false;
+bool htmlTags = false;
+bool showOfflineUsers = false;
+
+qConfig* configDialog;

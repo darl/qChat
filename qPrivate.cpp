@@ -115,7 +115,7 @@ void qPrivate::initUI()
     setWindowTitle("Conference with");
 }
 
-qPrivate::qPrivate(quint64 id, const QList<qUser*>& l) : QDialog(0), confID(id), confUserList(l)
+qPrivate::qPrivate(quint64 id, const QList<qUser*>& l) : QDialog(0), confUserList(l), confID(id)
 {
     initUI();
 

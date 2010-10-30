@@ -53,8 +53,9 @@ QVariant QUserListModel::headerData ( int /*section*/, Qt::Orientation /*orienta
 
 void QUserListModel::updateUser(QHostAddress addr, QString nick, userStatus us)
 {
-    qUser* user;
-    bool adding=false;
+    qUser* user = 0;
+    bool adding = false;
+
     if(userList.contains(addr.toString()))
         user = userList.value(addr.toString());
     else
@@ -64,14 +65,19 @@ void QUserListModel::updateUser(QHostAddress addr, QString nick, userStatus us)
         adding=true;
     }
 
-    user->address=addr;
+    user->address = addr;
     user->lastCheck = QDateTime::currentDateTime();
     user->nick = nick;
     if(((!adding) && (user->status == usOffline)) || adding)
         emit nowOnline(user);  //вызываем сигнал при добавлении нового или возврате в онлайн старого пользователя
-    user->status = us;
+    if(user->status != us)
+    {
+        user->status = us;
+        emit statusChanged(user);
+    }
 
     userList[addr.toString()] = user;
+
     if(adding)
         endInsertRows();
     else
