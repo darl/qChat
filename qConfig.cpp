@@ -10,7 +10,9 @@ qConfig::qConfig(QWidget *parent) :
     ui(new Ui::qconfig)
 {
     ui->setupUi(this);
+
     connect(this,SIGNAL(accepted()),this,SLOT(apply()));
+
     adjustSize();
     ui->verticalLayout->setSizeConstraint(QLayout::SetFixedSize);
 }

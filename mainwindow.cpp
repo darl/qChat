@@ -3,6 +3,7 @@
 #include <QtGui>
 #include <QtNetwork/QUdpSocket>
 #include <QtNetwork/QHostInfo>
+#include <QByteArray>
 
 #include "qTypes.h"
 #include "qChat.h"
@@ -102,10 +103,22 @@ void MainWindow::aboutClick()
 
 void MainWindow::linkClick(const QUrl& url)
 {
-    qUser* us = userList[url.host()];
-    if(!us) return;
-    msgLine->setText(us->nick+", "+msgLine->text());
-    msgLine->setFocus();
+    if(url.scheme() == "qchat")
+    {
+        qUser* us = userList[url.host()];
+        if(!us) return;
+        msgLine->setText(us->nick+", "+msgLine->text());
+        msgLine->setFocus();
+    }
+    else
+    {
+        chatArea->textCursor().deletePreviousChar();
+        QByteArray ba;
+        ba.append(url.fragment());
+
+        QString s(QByteArray::fromBase64(ba));
+        chatArea->textCursor().insertHtml(s);
+    }
 }
 
 void MainWindow::trayClick(QSystemTrayIcon::ActivationReason ar)
@@ -152,7 +165,7 @@ void MainWindow::createUI()
     chatArea = new QTextBrowser(this);
     chatArea->setOpenExternalLinks(true);   //ссылки будут открываться внешне, а не будут пытаться открыться внутри виджета
     QDesktopServices::setUrlHandler("qchat",this,"linkClick"); //нажатие на имя пользователя
-    QDesktopServices::setUrlHandler("qbot",this,"");   //нажатие на 'more' в сообщении бота
+    QDesktopServices::setUrlHandler("qbot",this,"linkClick");   //нажатие на 'more' в сообщении бота
     chatArea->setFocusPolicy(Qt::ClickFocus);
     chatArea->document()->setMaximumBlockCount(2000);
 

@@ -14,7 +14,6 @@ QUserListModel::QUserListModel(QObject *parent) :
 
 }
 
-
 Qt::ItemFlags QUserListModel::flags ( const QModelIndex & /*index*/ ) const
 {
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled;

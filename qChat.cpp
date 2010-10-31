@@ -45,6 +45,7 @@ void qGeneralChat::processData()
         QHostAddress addr;
         datagram.resize(globalSocket->pendingDatagramSize());
         globalSocket->readDatagram(datagram.data(), datagram.size(),&addr);
+        if(datagram.size()<2) return;
         messageType mt = static_cast<messageType>(datagram.at(0));
         userStatus us = static_cast<userStatus>(datagram.at(1));
         datagram.remove(0,2);
@@ -70,7 +71,18 @@ void qGeneralChat::processData()
             emit insertMessage(tr("<font color='red'>%1</font>").arg(datagram.data()),true,NULL);
             break;
         case mtBot:
-            emit insertMessage(tr("<font color='#005500'><img src='%2'>%1</font>").arg(datagram.data()).arg(statusIconsStr(us)),true,NULL);
+            {
+                int n= datagram.indexOf("<br>");
+                if(n < 0)
+                    emit insertMessage(tr("<font color='#005000'><img src='%2'>%1</font>").arg(datagram.data()).arg(statusIconsStr(us)),true,NULL);
+                else
+                {
+                    QString f = datagram.left(n);
+                    QByteArray m = datagram.remove(0,n);
+                    QString m2 = m.toBase64();
+                    emit insertMessage(tr("<font color='#005000'><img src='%2'>%1 <a href='qbot://#%3'>more...</font>").arg(f).arg(statusIconsStr(us)).arg(m2),true,NULL);
+                }
+            }
             break;
         default:
             emit insertMessage(tr("<font color='red'><b>Unknown message (Type: %1, status: %2): %3</b></font>").arg(mt).arg(us).arg(datagram.data()),true,NULL);
