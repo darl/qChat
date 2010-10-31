@@ -55,12 +55,10 @@ private slots:
 
 
 protected:
-    void closeEvent(QCloseEvent *event);
     bool eventFilter(QObject *obj, QEvent *event);
 
 public:
     MainWindow(QWidget *parent = 0);
-    ~MainWindow();
 
 };
 

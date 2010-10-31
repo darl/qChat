@@ -111,11 +111,19 @@ void MainWindow::linkClick(const QUrl& url)
 void MainWindow::trayClick(QSystemTrayIcon::ActivationReason ar)
 {
     if(ar==QSystemTrayIcon::Trigger)
-        setVisible(!isVisible());
-    if(isVisible())
     {
-        raise();
-        activateWindow();
+        if(!isActiveWindow() && isVisible())
+        {
+            raise();
+            activateWindow();
+        }
+        else
+            setVisible(!isVisible());
+        if(isVisible())
+        {
+            raise();
+            activateWindow();
+        }
     }
 }
 
@@ -294,12 +302,7 @@ MainWindow::MainWindow(QWidget *parent)
     init_genrand64(QDateTime::currentDateTime().currentMSecsSinceEpoch());
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-    hide();
-    event->ignore();
-}
-
+//обработка нажатий вверх/вниз для поля ввода сообщения
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
     if(obj == msgLine)
@@ -347,9 +350,4 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
         }
     // standard event processing
     return QObject::eventFilter(obj, event);
-}
-
-MainWindow::~MainWindow()
-{
-
 }
