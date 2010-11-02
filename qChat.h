@@ -1,13 +1,9 @@
 #ifndef QCHAT_H
 #define QCHAT_H
 
-#include <QObject>
-#include <QTcpServer>
+#include "qchat_pch.h"
 #include "qTypes.h"
 
-class QUdpSocket;
-class QString;
-class QIcon;
 class qUser;
 
 //получение иконки из статуса

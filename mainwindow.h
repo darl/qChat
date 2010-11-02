@@ -1,17 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QSystemTrayIcon>
-
-class QTextBrowser;
-class QLineEdit;
-class QPushButton;
-class qUser;
-class QUrl;
-class qGeneralChat;
-class qPrivateServer;
-class QListView;
+#include "qchat_pch.h"
+#include "qChat.h"
+#include "qUser.h"
 
 class MainWindow : public QMainWindow
 {

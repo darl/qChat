@@ -1,8 +1,7 @@
 #ifndef QUSER_H
 #define QUSER_H
 
-#include <QDateTime>
-#include <QtNetwork>
+#include "qchat_pch.h"
 
 #include "qTypes.h"
 #include "qChat.h"

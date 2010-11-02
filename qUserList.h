@@ -1,13 +1,10 @@
 #ifndef QUSERLIST_H
 #define QUSERLIST_H
 
-#include <QAbstractListModel>
-#include <QHash>
+#include "qchat_pch.h"
 
 #include "qUser.h"
 
-class qUser;
-class QHostAddress;
 
 class QUserListModel : public QAbstractListModel
 {

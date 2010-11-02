@@ -8,7 +8,7 @@ QT       += core gui network
 
 TARGET = qChat
 TEMPLATE = app
-
+CONFIG += precompile_header
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -26,11 +26,13 @@ HEADERS += mainwindow.h \
         qTypes.h \
         qPrivate.h \
         qUser.h \
-        mt64.h
+        mt64.h \
+        qchat_pch.h
 
 RESOURCES += \
         res.qrc
 
+PRECOMPILED_HEADER = qchat_pch.h
 
 FORMS += \
         qconfig.ui

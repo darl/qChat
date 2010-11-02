@@ -1,7 +1,8 @@
 #include "qPrivate.h"
 
+#include "qchat_pch.h"
+
 #include "mt64.h"
-#include <QtGui>
 #include "qUserList.h"
 #include "qConfig.h"
 

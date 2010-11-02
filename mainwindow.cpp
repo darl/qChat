@@ -1,9 +1,6 @@
 #include "mainwindow.h"
 
-#include <QtGui>
-#include <QtNetwork/QUdpSocket>
-#include <QtNetwork/QHostInfo>
-#include <QByteArray>
+#include "qchat_pch.h"
 
 #include "qTypes.h"
 #include "qChat.h"

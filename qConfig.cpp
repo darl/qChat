@@ -1,7 +1,7 @@
 #include "qConfig.h"
 #include "ui_qConfig.h"
 
-#include <QtNetwork/QHostInfo>
+#include "qchat_pch.h"
 
 #include "qChat.h"
 

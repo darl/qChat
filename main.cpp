@@ -1,5 +1,4 @@
-#include <QtGui/QApplication>
-#include <QTextCodec>
+#include "qchat_pch.h"
 #include "mainwindow.h"
 #include "qConfig.h"
 

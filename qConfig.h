@@ -1,12 +1,10 @@
 #ifndef QCONFIG_H
 #define QCONFIG_H
 
-#include <QtGlobal>
-#include <QDialog>
+#include "qchat_pch.h"
 
 #include "qTypes.h"
 
-class QHostAddress;
 
 extern QHostAddress broadcast;
 extern quint16 port;

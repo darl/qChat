@@ -1,14 +1,9 @@
 #ifndef QPRIVATE_H
 #define QPRIVATE_H
 
-#include <QDialog>
-#include <QHash>
-#include <QList>
+#include "qchat_pch.h"
+#include "qChat.h"
 
-class QLineEdit;
-class qUser;
-class QListWidget;
-class QTextBrowser;
 
 class qPrivate : public QDialog
 {

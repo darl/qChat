@@ -1,6 +1,6 @@
 #include "qUserList.h"
 
-#include <QIcon>
+#include "qchat_pch.h"
 
 #include "qChat.h"
 #include "qConfig.h"

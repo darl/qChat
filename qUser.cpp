@@ -1,8 +1,6 @@
 #include "qUser.h"
 
-#include <QByteArray>
-#include <QListWidgetItem>
-#include <QMessageBox>
+#include "qchat_pch.h"
 
 #include "qConfig.h"
 #include "qPrivate.h"
