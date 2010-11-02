@@ -110,7 +110,7 @@ void qGeneralChat::sendMessage(const QString& msg)
     originalMsg.replace(QRegExp("(^|[\\n ])([\\w]*)((www|ftp)\\.[^ \\,\\\"\\t\\n\\r<]*)"),"\\1\\2<a href=\"http://\\3\">\\3</a>");
     originalMsg.replace(QRegExp("(^|[\\n ])([a-z0-9&\\-_\\.]+)@([\\w\\-]+\\.([\\w\\-\\.]+)+)"),"\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>");
 
-
+    originalMsg.replace(QRegExp("(^|[\\n ])(magnet:\\?xt=.*\\&xl=(.[0-9]*)\\&dn=)(.*)"),"\\1<a href=\"\\2\\4\">\\4</a>");
 
     QByteArray dg=originalMsg.toAscii();
     dg.insert(0,mtMessage);
