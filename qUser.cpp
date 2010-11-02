@@ -1,13 +1,13 @@
 #include "qUser.h"
 
 #include <QByteArray>
-
+#include <QListWidgetItem>
 #include <QMessageBox>
 
 #include "qConfig.h"
 #include "qPrivate.h"
 #include "qUserList.h"
-#include <QListWidgetItem>
+
 
 qUser::qUser(QObject *obj): QObject(obj)
 {

@@ -130,11 +130,9 @@ void MainWindow::linkClick(const QUrl& url)
     else if(url.scheme() == "qbot") //нажатие на ссылку 'more...' у многострочного сообщения бота
     {
         chatBrowser->textCursor().deletePreviousChar(); // 'more...' удаляется за один вызов
-        QByteArray ba;
-        ba += url.fragment();
 
         bool buttom = (chatBrowser->verticalScrollBar()->value() == chatBrowser->verticalScrollBar()->maximum());
-        chatBrowser->textCursor().insertHtml(QString(QByteArray::fromBase64(ba)));
+        chatBrowser->textCursor().insertHtml(QString(QByteArray::fromBase64(url.fragment().toAscii())));
         //прокрутка вниз
         if(buttom) chatBrowser->verticalScrollBar()->setValue(chatBrowser->verticalScrollBar()->maximum());
     }
