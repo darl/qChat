@@ -12,118 +12,138 @@
 #include "qConfig.h"
 #include "mt64.h"
 
-void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* user)
+/*вставка сообщения в (QTextBrowser chatBrowser)
+  на входе
+   -сообщение с хтмл тегами
+   -флаг добавления текущего времени
+   -указатель на класс пользователя-отправителя*/
+void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* userFrom)
 {
     QString addMsg = "";
     QString originalMsg = msg;
 
     if(insertTime)
-        addMsg+=tr("<font color='gray'>%1</font> ").arg(QTime::currentTime().toString());
+        addMsg += tr("<font color='%2'>%1</font> ").arg(QTime::currentTime().toString(), "gray" /*timestamp color*/ );
 
-    if(user)
+    //если есть отправитель
+    if(userFrom)
     {
-        //подсветка своего ника
-        originalMsg.replace(QRegExp(tr("\\b(%1)\\b").arg(nick),Qt::CaseInsensitive),"<font style='background-color:yellow'>\\1</font>");
         //отправитель
-        addMsg+=tr("<a href='qchat://%1'><b>%2</b></a>: ").arg(user->address.toString()).arg(user->nick);
+        addMsg += tr("<a href='qchat://%1'><b>%2</b></a>: ").arg(userFrom->address.toString()).arg(userFrom->nick);
+        //подсветка своего ника
+        originalMsg.replace(QRegExp(tr("\\b(%1)\\b").arg(nick), Qt::CaseInsensitive),
+                                      "<font style='background-color:yellow'>\\1</font>");
     }
 
+    addMsg += originalMsg;
 
-    addMsg+=originalMsg;
+    bool buttom = (chatBrowser->verticalScrollBar()->value() == chatBrowser->verticalScrollBar()->maximum());
 
-    bool buttom = (chatArea->verticalScrollBar()->value() == chatArea->verticalScrollBar()->maximum());
+    chatBrowser->append(addMsg);
 
-    chatArea->append(addMsg);
-
-    if(buttom) chatArea->verticalScrollBar()->setValue(chatArea->verticalScrollBar()->maximum());
+    //прокрутка вниз
+    if(buttom) chatBrowser->verticalScrollBar()->setValue(chatBrowser->verticalScrollBar()->maximum());
 }
 
-//нажатие кнопки отправить
+/*нажатие кнопки отправить*/
 void MainWindow::sendClick()
 {
-    if(!msgLine->text().isEmpty())
+    if(!msgEdit->text().isEmpty())
     {
-        if(previusMessages.contains(msgLine->text()))
-            previusMessages.removeAll(msgLine->text());
-        previusMessages.push_back(msgLine->text());
+        //запоминаем сообщение для быстрого ввода
+        if(previusMessages.contains(msgEdit->text()))
+            previusMessages.removeAll(msgEdit->text());
+        previusMessages.push_back(msgEdit->text());
         currentMessage = previusMessages.end();
 
-        general->sendMessage(msgLine->text());
+        general->sendMessage(msgEdit->text());
     }
 
-    msgLine->clear();
-    msgLine->setFocus();
+    msgEdit->clear();
+    msgEdit->setFocus();
 }
 
+/*нажатие кнопки обновить*/
 void MainWindow::refreshClick()
 {
     userList.clearOfflineUsers();
     general->sendWhoRequest();
 }
 
+/*нажатие кнопки конференция*/
 void MainWindow::conferenceClick()
 {
-    QList<QModelIndex> mil(onlineList->selectionModel()->selectedIndexes());
-    QList<qUser*> ul;
-    QList<QModelIndex>::iterator i;
-    QList<QHostAddress> la = QHostInfo::fromName(QHostInfo::localHostName()).addresses();
-    for(i = mil.begin();i!=mil.end();i++)
-    {
-        qUser* u = userList[i->data(Qt::ToolTipRole).toString()];
-        if(!u) continue;    //на всякий случай
+    QList<QModelIndex> selected(userListView->selectionModel()->selectedIndexes());
+    QList<qUser*> selectedUserList;
+    QModelIndex i;
 
-        if(la.contains(u->address)) //выделен локальный пользователь
+    //получение списка IP локальной машины
+    QList<QHostAddress> localAddresses = QHostInfo::fromName(QHostInfo::localHostName()).addresses();
+
+    foreach(i, selected)
+    {
+        qUser* u = userList[i.data(Qt::ToolTipRole).toString()];
+        if(!u) continue;
+
+        if(localAddresses.contains(u->address)) //выделен локальный пользователь
             continue;
 
-        ul.append(u);
+        selectedUserList.append(u);
     }
 
-    if(ul.isEmpty())
+    if(selectedUserList.isEmpty())
     {
         //сообщить об ошибке
-        QMessageBox::warning(this,"Conference","Need to select at least one non local person");
+        qDebug() << "Need to select at least one non-local user";
         return;
     }
-    qPrivate* wnd = privateList.getPrivateWindow(ul);
+
+    qPrivate* wnd = privateList.getPrivateWindow(selectedUserList);
     wnd->show();
 }
 
+/*нажатие кнопки настройки*/
 void MainWindow::configClick()
 {
-    configDialog->show();
+    configDialog->exec();
 }
 
+/*нажатие кнопки о программе*/
 void MainWindow::aboutClick()
 {
     QMessageBox::about(this, tr("About qChat"),
-                 tr("<h2>qChat</h2>"
-                    "<p>developed by Darl<p>"
+                 tr("<font size='6'>qChat</font><small><i>alpha</i></small>"
+                    "<p>developed by Darl</p>"
                     "<p>qChat is a small server-less chat client</p>"));
 }
 
+/*нажатие на ссылку в (QTextBrowser chatBrowser)*/
 void MainWindow::linkClick(const QUrl& url)
 {
-    if(url.scheme() == "qchat")
+    if(url.scheme() == "qchat") //нажатие на ник автора сообщения
     {
-        qUser* us = userList[url.host()];
-        if(!us) return;
-        msgLine->setText(us->nick+", "+msgLine->text());
-        msgLine->setFocus();
+        qUser* user = userList[url.host()];
+        if(!user) return;
+        msgEdit->setText(tr("%1, %2").arg(user->nick, msgEdit->text()));
+        msgEdit->setFocus();
     }
-    else
+    else if(url.scheme() == "qbot") //нажатие на ссылку 'more...' у многострочного сообщения бота
     {
-        chatArea->textCursor().deletePreviousChar();
+        chatBrowser->textCursor().deletePreviousChar(); // 'more...' удаляется за один вызов
         QByteArray ba;
-        ba.append(url.fragment());
+        ba += url.fragment();
 
-        QString s(QByteArray::fromBase64(ba));
-        chatArea->textCursor().insertHtml(s);
+        bool buttom = (chatBrowser->verticalScrollBar()->value() == chatBrowser->verticalScrollBar()->maximum());
+        chatBrowser->textCursor().insertHtml(QString(QByteArray::fromBase64(ba)));
+        //прокрутка вниз
+        if(buttom) chatBrowser->verticalScrollBar()->setValue(chatBrowser->verticalScrollBar()->maximum());
     }
 }
 
-void MainWindow::trayClick(QSystemTrayIcon::ActivationReason ar)
+/*нажатие на иконку в трее*/
+void MainWindow::trayClick(QSystemTrayIcon::ActivationReason activationReason)
 {
-    if(ar==QSystemTrayIcon::Trigger)
+    if(activationReason==QSystemTrayIcon::Trigger) //одиночное нажатие
     {
         if(!isActiveWindow() && isVisible())
         {
@@ -132,45 +152,90 @@ void MainWindow::trayClick(QSystemTrayIcon::ActivationReason ar)
         }
         else
             setVisible(!isVisible());
+
         if(isVisible())
         {
             raise();
             activateWindow();
         }
     }
+    else if(activationReason == QSystemTrayIcon::Context) //правый клик
+    {
+        QMenu* trayMenu = new QMenu(this);
+
+        trayMenu->addAction(QIcon(":/chat-white"), tr("Show qChat"), this, SLOT(show()));
+        trayMenu->addSeparator();
+
+        QMenu* statusMenu = trayMenu->addMenu(statusIcon(status),"Status");
+            statusMenu->addAction(QIcon(":/online"), tr("Online"), this, SLOT(setOnlineStatus()));
+            statusMenu->addAction(QIcon(":/away"), tr("Away"), this, SLOT(setAwayStatus()));
+            statusMenu->addAction(QIcon(":/busy"), tr("Busy"), this, SLOT(setBusyStatus()));
+        trayMenu->addAction(QIcon(":/config"), tr("Config"), this, SLOT(configClick()));
+        trayMenu->addSeparator();
+
+        trayMenu->addAction(QIcon(":/close"),tr("Exit"),this,SLOT(exitClick()));
+
+        trayMenu->exec(QCursor::pos());
+        trayMenu->deleteLater();
+    }
 }
 
+/*нажатие кнопки выход в контекстном меню иконки трея*/
 void MainWindow::exitClick()
 {
     saveSettings();
 
     general->sendOfflineWarning();
-    tray->hide();
-    delete configDialog;
+
+    systemTray->hide();
     qApp->quit();
 }
 
+/*сигнал о входе пользователя в чат*/
 void MainWindow::nowOnline(qUser* u)
 {
-    insertMessage(tr("<font color='gray'>%1 has come online</font>").arg(u->nick),true,NULL);
+    insertMessage(tr("<font color='%2'>%1 has come online</font>").arg(u->nick, "gray" /*цвет сообщения*/),true,NULL);
 }
 
+/*сигнал о выходе пользователя из чата*/
 void MainWindow::nowOffline(qUser* u)
 {
-    insertMessage(tr("<font color='gray'>%1 has gone offline</font>").arg(u->nick),true,NULL);
+    insertMessage(tr("<font color='%2'>%1 has gone offline</font>").arg(u->nick, "gray" /*цвет сообщения*/),true,NULL);
 }
 
+/*выбор статуса в меню трея*/
+void MainWindow::setOnlineStatus()
+{
+    status = usOnline;
+    general->sendOnlinePing();
+}
+
+/*выбор статуса в меню трея*/
+void MainWindow::setAwayStatus()
+{
+    status = usAway;
+    general->sendOnlinePing();
+}
+
+/*выбор статуса в меню трея*/
+void MainWindow::setBusyStatus()
+{
+    status = usBusy;
+    general->sendOnlinePing();
+}
+
+/*построение интерфейса*/
 void MainWindow::createUI()
 {
-    chatArea = new QTextBrowser(this);
-    chatArea->setOpenExternalLinks(true);   //ссылки будут открываться внешне, а не будут пытаться открыться внутри виджета
+    chatBrowser = new QTextBrowser(this);
+    chatBrowser->setOpenExternalLinks(true);   //ссылки будут открываться внешне, а не будут пытаться открыться внутри виджета
     QDesktopServices::setUrlHandler("qchat",this,"linkClick"); //нажатие на имя пользователя
     QDesktopServices::setUrlHandler("qbot",this,"linkClick");   //нажатие на 'more' в сообщении бота
-    chatArea->setFocusPolicy(Qt::ClickFocus);
-    chatArea->document()->setMaximumBlockCount(2000);
+    chatBrowser->setFocusPolicy(Qt::ClickFocus);
+    chatBrowser->document()->setMaximumBlockCount(2000); //максимальное число видимых сообщений
 
-    QToolBar* bb = new QToolBar(tr("Button bar"));
-    bb->setObjectName("buttonBar");
+    QToolBar* buttonBar = new QToolBar(tr("Buttons"));
+    buttonBar->setObjectName("buttonBar");
     QToolButton* refreshButton = new QToolButton();
     refreshButton->setIcon(QIcon(":/refresh"));
     refreshButton->setFocusPolicy(Qt::NoFocus);
@@ -183,67 +248,58 @@ void MainWindow::createUI()
     QToolButton* aboutButton = new QToolButton();
     aboutButton->setIcon(QIcon(":/about"));
     aboutButton->setFocusPolicy(Qt::NoFocus);
-    bb->addWidget(refreshButton);
-    bb->addWidget(conferenceButton);
-    bb->addWidget(configButton);
-    bb->addWidget(aboutButton);
-    addToolBar(Qt::BottomToolBarArea,bb);
+    buttonBar->addWidget(refreshButton);
+    buttonBar->addWidget(conferenceButton);
+    buttonBar->addWidget(configButton);
+    buttonBar->addWidget(aboutButton);
+    addToolBar(Qt::BottomToolBarArea, buttonBar);
 
-    msgLine = new QLineEdit(this);
-    msgLine->setPlaceholderText(tr("Input message here"));
-    msgLine->installEventFilter(this);
+    msgEdit = new QLineEdit(this);
+    msgEdit->setPlaceholderText(tr("Input message here"));
+    msgEdit->installEventFilter(this);
 
     sendButton = new QPushButton(QIcon(":/send"),tr("send"));
     sendButton->setFocusPolicy(Qt::NoFocus);
 
-    QToolBar* tb = new QToolBar(tr("Send toolbar"));
-    tb->setObjectName("sendToolBar");
-    tb->addWidget(msgLine);
-    tb->addWidget(sendButton);
-    addToolBar(Qt::BottomToolBarArea,tb);
+    QToolBar* messageBar = new QToolBar(tr("Message"));
+    messageBar->setObjectName("messageBar");
+    messageBar->addWidget(msgEdit);
+    messageBar->addWidget(sendButton);
+    addToolBar(Qt::BottomToolBarArea,messageBar);
 
-    onlineList = new QListView(this);
-    onlineList->setUniformItemSizes(true);
-    onlineList->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    onlineList->setModel(&userList);
+    userListView = new QListView(this);
+    userListView->setUniformItemSizes(true);
+    userListView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    userListView->setModel(&userList);
 
-    QDockWidget* ul = new QDockWidget(tr("User list"));
-    ul->setObjectName("userListBar");
-    ul->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
-    ul->setWidget(onlineList);
-    addDockWidget(Qt::LeftDockWidgetArea,ul);
+    QDockWidget* userListBar = new QDockWidget(tr("User list"));
+    userListBar->setObjectName("userListBar");
+    userListBar->setFeatures(QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable);
+    userListBar->setWidget(userListView);
+    addDockWidget(Qt::LeftDockWidgetArea,userListBar);
 
-    setCentralWidget(chatArea);
+    setCentralWidget(chatBrowser);
 
     connect(sendButton,SIGNAL(clicked()),this,SLOT(sendClick()));
-    connect(msgLine,SIGNAL(returnPressed()),this,SLOT(sendClick()));
+    connect(msgEdit,SIGNAL(returnPressed()),this,SLOT(sendClick()));
     connect(refreshButton,SIGNAL(clicked()),this,SLOT(refreshClick()));
     connect(conferenceButton,SIGNAL(clicked()),this,SLOT(conferenceClick()));
     connect(configButton,SIGNAL(clicked()),this,SLOT(configClick()));
     connect(aboutButton,SIGNAL(clicked()),this,SLOT(aboutClick()));
 }
 
+/*создание иконки в трее*/
 void MainWindow::createTray()
 {
-    QMenu* trayMenu = new QMenu();
-    trayMenu->addAction(QIcon(":/chat-white"),"Show qChat",this,SLOT(show()));
-    trayMenu->addSeparator();
-    QMenu* statusMenu = trayMenu->addMenu(statusIcons(status),"Status");
-        statusMenu->addAction(QIcon(":/online"),"Online");
-        statusMenu->addAction(QIcon(":/away"),"Away");
-        statusMenu->addAction(QIcon(":/busy"),"Busy");
-    trayMenu->addAction(QIcon(":/config"),"Config",this,SLOT(configClick()));
-    trayMenu->addSeparator();
-    trayMenu->addAction(QIcon(":/close"),"Exit",this,SLOT(exitClick()));
+    systemTray = new QSystemTrayIcon(QIcon(":/chat"),this);
+    systemTray->setToolTip(tr("qChat - alpha"));
+    systemTray->show();
 
-    tray = new QSystemTrayIcon(QIcon(":/chat"),this);
-    tray->setContextMenu(trayMenu);
-    tray->show();
-
-    connect(tray,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayClick(QSystemTrayIcon::ActivationReason)));
-
+    connect(systemTray,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayClick(QSystemTrayIcon::ActivationReason)));
 }
 
+/*создание таймеров
+  для нахождения вышедших из сети пользователей*/
 void MainWindow::createTimers()
 {
     QTimer* onlinePingTimer = new QTimer(this);
@@ -256,9 +312,10 @@ void MainWindow::createTimers()
     onlineCheckTimer->start(10000);
 }
 
+/*загрузка настроек
+  вызвется при выходе из программы*/
 void MainWindow::loadSettings()
 {
-    //восстановление настроек
     QSettings settings("qChat");
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
@@ -268,9 +325,9 @@ void MainWindow::loadSettings()
     port = settings.value("port",49675).toInt();
 }
 
+/*сохранение настроек*/
 void MainWindow::saveSettings()
 {
-    //сохранение настроек
     QSettings settings("qChat");
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
@@ -280,45 +337,39 @@ void MainWindow::saveSettings()
     settings.setValue("port",port);
 }
 
+/*создание окна*/
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     createUI();
-
+    loadSettings();
+    createTray();
 
     general = new qGeneralChat();
     connect(general,SIGNAL(insertMessage(QString,bool,qUser*)),this,SLOT(insertMessage(QString,bool,qUser*)));
-
-
-    loadSettings();
+    privateServer = new qPrivateServer(this);
 
     createTimers();
-
-    createTray();
 
     connect(&userList,SIGNAL(nowOnline(qUser*)),this,SLOT(nowOnline(qUser*)));
     connect(&userList,SIGNAL(nowOffline(qUser*)),this,SLOT(nowOffline(qUser*)));
 
-    ps = new qPrivateServer(this);
-
-    //вставка сообщения "qChat alpha - %hostname%"
     insertMessage(tr("<font color='gray'>qChat alpha - %1</font>").arg(QHostInfo::localHostName()));
 
-    setWindowTitle(tr("qChat - general"));
+    setWindowTitle(tr("qChat"));
     setWindowFlags(Qt::Window |Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
     setWindowIcon(QIcon(":/chat"));
 
     general->sendOnlineWarning();
-    general->sendWhoRequest();
 
-    //инициализация генератора числом миллисекунд с 1970 года
+    //инициализация генератора псевдослучайных чисел числом миллисекунд с 1970 года
     init_genrand64(QDateTime::currentDateTime().currentMSecsSinceEpoch());
 }
 
-//обработка нажатий вверх/вниз для поля ввода сообщения
+/*обработка нажатий вверх/вниз для поля ввода сообщения*/
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
-    if(obj == msgLine)
+    if(obj == msgEdit)
         if (event->type() == QEvent::KeyPress)
         {
             QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
@@ -334,11 +385,11 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
                 if(currentMessage != previusMessages.end())
                 {
-                    msgLine->setText(*currentMessage);
-                    msgLine->selectAll();
+                    msgEdit->setText(*currentMessage);
+                    msgEdit->selectAll();
                 }
                 else
-                    msgLine->clear();
+                    msgEdit->clear();
                 return true;
             case Qt::Key_Down:
                 if(previusMessages.isEmpty())
@@ -350,11 +401,11 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 
                 if(currentMessage != previusMessages.end())
                 {
-                    msgLine->setText(*currentMessage);
-                    msgLine->selectAll();
+                    msgEdit->setText(*currentMessage);
+                    msgEdit->selectAll();
                 }
                 else
-                    msgLine->clear();
+                    msgEdit->clear();
                 return true;
             default:
                 return QObject::eventFilter(obj, event);

@@ -91,7 +91,7 @@ void qUser::processData()
             w->users->clear();
             foreach(u,ul)
             {
-                new QListWidgetItem(statusIcons(u->status),u->nick,w->users);
+                new QListWidgetItem(statusIcon(u->status),u->nick,w->users);
                 u->directConnect(); //заранее подключаемся
                 //u->sendConfInfo(); //отправляем информацию о конференции
                 w->setWindowTitle(w->windowTitle()+" "+u->nick);

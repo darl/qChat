@@ -34,7 +34,7 @@ QVariant QUserListModel::data ( const QModelIndex & index, int role) const
         return u->address.toString();
         break;
     case Qt::DecorationRole:
-        return statusIcons(u->status);
+        return statusIcon(u->status);
         break;
     }
     return QVariant::Invalid;

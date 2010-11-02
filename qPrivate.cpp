@@ -122,7 +122,7 @@ qPrivate::qPrivate(quint64 id, const QList<qUser*>& l) : QDialog(0), confUserLis
     qUser* u;
     foreach(u,l)
     {
-        new QListWidgetItem(statusIcons(u->status),u->nick,users);
+        new QListWidgetItem(statusIcon(u->status),u->nick,users);
         u->directConnect(); //заранее подключаемся
         setWindowTitle(windowTitle()+" "+u->nick);
     }

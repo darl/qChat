@@ -11,7 +11,7 @@ class QIcon;
 class qUser;
 
 //получение иконки из статуса
-QIcon statusIcons(userStatus st);
+QIcon statusIcon(userStatus st);
 
 class qGeneralChat:public QObject
 {
@@ -35,7 +35,7 @@ private slots:
     void processData();
 
 private:
-    QUdpSocket* globalSocket;
+    QUdpSocket* generalChatSocket;
 };
 
 class qPrivateServer:public QTcpServer

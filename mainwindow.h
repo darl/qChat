@@ -18,11 +18,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
-    QTextBrowser* chatArea;
-    QLineEdit* msgLine;
+    QTextBrowser* chatBrowser;
+    QLineEdit* msgEdit;
     QPushButton* sendButton;
-    QSystemTrayIcon* tray;
-    QListView* onlineList;
+    QSystemTrayIcon* systemTray;
+    QListView* userListView;
 
     void createUI();
     void createTray();
@@ -33,13 +33,14 @@ private:
 
     qGeneralChat* general;
 
-    qPrivateServer* ps;
+    qPrivateServer* privateServer;
 
+    //список отправленных сообщений для быстрого ввода
     QList<QString> previusMessages;
     QList<QString>::iterator currentMessage;
 
 private slots:
-    void insertMessage(const QString& msg, bool insertTime = false, qUser* user = NULL);
+    void insertMessage(const QString& msg, bool insertTime = false, qUser* userFrom = NULL);
 
     void nowOnline(qUser* u);
     void nowOffline(qUser* u);
@@ -53,7 +54,9 @@ private slots:
     void trayClick(QSystemTrayIcon::ActivationReason);
     void exitClick();
 
-
+    void setOnlineStatus();
+    void setAwayStatus();
+    void setBusyStatus();
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 

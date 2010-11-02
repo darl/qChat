@@ -7,9 +7,10 @@
 #include "qUserList.h"
 #include "qUser.h"
 
-QString statusIconsStr(userStatus st)
+/*получение иконки для статуса*/
+QString statusIconStr(userStatus status)
 {
-    switch(st)
+    switch(status)
     {
     case usOnline:
         return (":/online");
@@ -32,64 +33,72 @@ QString statusIconsStr(userStatus st)
     }
 }
 
-QIcon statusIcons(userStatus st)
+/*получение пути к иконке для статуса*/
+QIcon statusIcon(userStatus status)
 {
-    return QIcon(statusIconsStr(st));
+    return QIcon(statusIconStr(status));
 }
 
+/*обработка входящих пакетов*/
 void qGeneralChat::processData()
 {
-    while (globalSocket->hasPendingDatagrams())
+    while (generalChatSocket->hasPendingDatagrams())
     {
         QByteArray datagram;
         QHostAddress addr;
-        datagram.resize(globalSocket->pendingDatagramSize());
-        globalSocket->readDatagram(datagram.data(), datagram.size(),&addr);
+        datagram.resize(generalChatSocket->pendingDatagramSize());
+        generalChatSocket->readDatagram(datagram.data(), datagram.size(), &addr);
+
         if(datagram.size()<2) return;
-        messageType mt = static_cast<messageType>(datagram.at(0));
-        userStatus us = static_cast<userStatus>(datagram.at(1));
+        messageType msgType = static_cast<messageType>(datagram.at(0));
+        userStatus usrStatus = static_cast<userStatus>(datagram.at(1));
         datagram.remove(0,2);
-        switch(mt)
+
+        switch(msgType)
         {
         case mtMessage:
-            emit insertMessage(datagram.data(),true,userList[addr.toString()]);
+            emit insertMessage(datagram.data(), true, userList[addr.toString()]);
             break;
         case mtOnlinePing:
-            userList.updateUser(addr,datagram.data(),us);
+            userList.updateUser(addr, datagram.data(), usrStatus);
             break;
         case mtWhoRequest:
             sendOnlinePing();
             break;
         case mtOnlineWarning:
-            userList.updateUser(addr,datagram.data(),us);
+            userList.updateUser(addr, datagram.data(), usrStatus);
             sendOnlinePing();
             break;
         case mtOfflineWarning:
             userList.removeUser(addr);
             break;
         case mtSystemMessage:
-            emit insertMessage(tr("<font color='red'>%1</font>").arg(datagram.data()),true,NULL);
+            emit insertMessage(tr("<font color='red'>%1</font>").arg(datagram.data()), true, NULL);
             break;
         case mtBot:
             {
-                int n= datagram.indexOf("<br>");
-                if(n < 0)
-                    emit insertMessage(tr("<font color='#005000'><img src='%2'>%1</font>").arg(datagram.data()).arg(statusIconsStr(us)),true,NULL);
+                int firstBR = datagram.indexOf("<br>");
+                if(firstBR < 0)
+                    emit insertMessage(tr("<font color='%3'><img src='%2'>%1</font>")
+                                       .arg(datagram.data(), statusIconStr(usrStatus), "#005000"),true,NULL);
                 else
                 {
-                    QString f = datagram.left(n);
-                    QByteArray m = datagram.remove(0,n);
-                    QString m2 = m.toBase64();
-                    emit insertMessage(tr("<font color='#005000'><img src='%2'>%1 <a href='qbot://#%3'>more...</font>").arg(f).arg(statusIconsStr(us)).arg(m2),true,NULL);
+                    QString firstLine = datagram.left(firstBR);
+                    QByteArray m = datagram.remove(0,firstBR);
+                    QString otherLines = m.toBase64();
+                    emit insertMessage(tr("<font color='%3'><img src='%2'>%1 <a href='qbot://#%4'>more...</font>")
+                                       .arg(firstLine, statusIconStr(usrStatus), "#005000", otherLines),true,NULL);
                 }
             }
             break;
         default:
-            emit insertMessage(tr("<font color='red'><b>Unknown message (Type: %1, status: %2): %3</b></font>").arg(mt).arg(us).arg(datagram.data()),true,NULL);
+            emit insertMessage(tr("<font color='red'><i>Unknown message (Type: %1, status: %2): %3</i></font>")
+                               .arg(msgType).arg(usrStatus).arg(datagram.data()),true,NULL);
         }
     }
 }
 
+/*отправка сообщения*/
 void qGeneralChat::sendMessage(const QString& msg)
 {
     QString originalMsg = msg;
@@ -101,10 +110,12 @@ void qGeneralChat::sendMessage(const QString& msg)
     originalMsg.replace(QRegExp("(^|[\\n ])([\\w]*)((www|ftp)\\.[^ \\,\\\"\\t\\n\\r<]*)"),"\\1\\2<a href=\"http://\\3\">\\3</a>");
     originalMsg.replace(QRegExp("(^|[\\n ])([a-z0-9&\\-_\\.]+)@([\\w\\-]+\\.([\\w\\-\\.]+)+)"),"\\1<a href=\"mailto:\\2@\\3\">\\2@\\3</a>");
 
+
+
     QByteArray dg=originalMsg.toAscii();
     dg.insert(0,mtMessage);
     dg.insert(1,status);
-    globalSocket->writeDatagram(dg,broadcast,port);
+    generalChatSocket->writeDatagram(dg,broadcast,port);
 }
 
 void qGeneralChat::sendWhoRequest()
@@ -112,7 +123,7 @@ void qGeneralChat::sendWhoRequest()
     QByteArray dg;
     dg.insert(0,mtWhoRequest);
     dg.insert(1,status);
-    globalSocket->writeDatagram(dg,broadcast,port);
+    generalChatSocket->writeDatagram(dg,broadcast,port);
 }
 
 void qGeneralChat::sendOnlinePing()
@@ -122,7 +133,7 @@ void qGeneralChat::sendOnlinePing()
     dg.insert(0,mtOnlinePing);
     dg.insert(1,status);
     dg.insert(2,nick);
-    globalSocket->writeDatagram(dg,broadcast,port);
+    generalChatSocket->writeDatagram(dg,broadcast,port);
 }
 
 void qGeneralChat::sendOnlineWarning()
@@ -132,7 +143,7 @@ void qGeneralChat::sendOnlineWarning()
     dg.insert(0,mtOnlineWarning);
     dg.insert(1,status);
     dg.insert(2,nick);
-    globalSocket->writeDatagram(dg,broadcast,port);
+    generalChatSocket->writeDatagram(dg,broadcast,port);
 }
 
 void qGeneralChat::sendOfflineWarning()
@@ -142,15 +153,15 @@ void qGeneralChat::sendOfflineWarning()
     dg.insert(0,mtOfflineWarning);
     dg.insert(1,usOffline);
     dg.insert(2,nick);
-    globalSocket->writeDatagram(dg,broadcast,port);
+    generalChatSocket->writeDatagram(dg,broadcast,port);
 }
 
 qGeneralChat::qGeneralChat(QObject* obj) : QObject(obj)
 {
-    globalSocket = new QUdpSocket(this);
-    globalSocket->bind(port,QUdpSocket::ReuseAddressHint);
+    generalChatSocket = new QUdpSocket(this);
+    generalChatSocket->bind(port,QUdpSocket::ReuseAddressHint);
 
-    connect(globalSocket,SIGNAL(readyRead()),this,SLOT(processData()));
+    connect(generalChatSocket,SIGNAL(readyRead()),this,SLOT(processData()));
 }
 
 
