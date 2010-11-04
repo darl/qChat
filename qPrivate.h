@@ -3,7 +3,7 @@
 
 #include "qchat_pch.h"
 #include "qChat.h"
-
+#include "qUser.h"
 
 class qPrivate : public QDialog
 {

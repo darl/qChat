@@ -8,6 +8,7 @@
 #include "qPrivate.h"
 #include "qConfig.h"
 #include "mt64.h"
+#include "qrsa.h"
 
 /*вставка сообщения в (QTextBrowser chatBrowser)
   на входе
@@ -31,7 +32,6 @@ void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* userF
         originalMsg.replace(QRegExp(tr("\\b(%1)\\b").arg(nick), Qt::CaseInsensitive),
                                       "<font style='background-color:yellow'>\\1</font>");
     }
-
     addMsg += originalMsg;
 
     bool buttom = (chatBrowser->verticalScrollBar()->value() == chatBrowser->verticalScrollBar()->maximum());
@@ -45,16 +45,15 @@ void MainWindow::insertMessage(const QString& msg, bool insertTime, qUser* userF
 /*нажатие кнопки отправить*/
 void MainWindow::sendClick()
 {
-    if(!msgEdit->text().isEmpty())
-    {
-        //запоминаем сообщение для быстрого ввода
-        if(previusMessages.contains(msgEdit->text()))
-            previusMessages.removeAll(msgEdit->text());
-        previusMessages.push_back(msgEdit->text());
-        currentMessage = previusMessages.end();
+    if(msgEdit->text().isEmpty()) return;
 
-        general->sendMessage(msgEdit->text());
-    }
+    //запоминаем сообщение для быстрого ввода
+    if(previusMessages.contains(msgEdit->text()))
+        previusMessages.removeAll(msgEdit->text());
+    previusMessages.push_back(msgEdit->text());
+    currentMessage = previusMessages.end();
+
+    general->sendMessage(msgEdit->text());
 
     msgEdit->clear();
     msgEdit->setFocus();
@@ -129,7 +128,7 @@ void MainWindow::linkClick(const QUrl& url)
         chatBrowser->textCursor().deletePreviousChar(); // 'more...' удаляется за один вызов
 
         bool buttom = (chatBrowser->verticalScrollBar()->value() == chatBrowser->verticalScrollBar()->maximum());
-        chatBrowser->textCursor().insertHtml(QString(QByteArray::fromBase64(url.fragment().toAscii())));
+        chatBrowser->textCursor().insertHtml(QByteArray::fromBase64(url.fragment().toAscii().data()));
         //прокрутка вниз
         if(buttom) chatBrowser->verticalScrollBar()->setValue(chatBrowser->verticalScrollBar()->maximum());
     }

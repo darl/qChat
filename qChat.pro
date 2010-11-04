@@ -17,7 +17,8 @@ SOURCES += main.cpp\
         qPrivate.cpp \
         qUser.cpp \
         qChat.cpp \
-        mt64.cpp
+        mt64.cpp \
+        qrsa.cpp
 
 HEADERS += mainwindow.h \
         qChat.h \
@@ -27,7 +28,8 @@ HEADERS += mainwindow.h \
         qPrivate.h \
         qUser.h \
         mt64.h \
-        qchat_pch.h
+        qchat_pch.h \
+        qrsa.h
 
 RESOURCES += \
         res.qrc
@@ -36,3 +38,5 @@ PRECOMPILED_HEADER = qchat_pch.h
 
 FORMS += \
         qconfig.ui
+
+unix:LIBS += -lgmp

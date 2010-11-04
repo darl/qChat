@@ -5,7 +5,6 @@
 
 #include "qTypes.h"
 
-
 extern QHostAddress broadcast;
 extern quint16 port;
 

@@ -125,9 +125,9 @@ void qGeneralChat::sendMessage(const QString& msg)
 void qGeneralChat::sendWhoRequest()
 {
     QByteArray dg;
-    dg.insert(0,mtWhoRequest);
-    dg.insert(1,status);
-    generalChatSocket->writeDatagram(dg,broadcast,port);
+    dg.insert(0, mtWhoRequest);
+    dg.insert(1, status);
+    generalChatSocket->writeDatagram(dg, broadcast, port);
 }
 
 void qGeneralChat::sendOnlinePing()

@@ -3,7 +3,7 @@
 
 #include "qchat_pch.h"
 #include "qTypes.h"
-
+#include "qUser.h"
 class qUser;
 
 //получение иконки из статуса
