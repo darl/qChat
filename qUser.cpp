@@ -107,6 +107,7 @@ void qUser::processData()
         {
             QByteArray ba;
             ba.append(static_cast<char>(mtPublicKey));
+            ba.append(confID);
             ba.append(QRsaKey::local().publicKey().toBase64());
             ba.append(':');
             ba.append(QRsaKey::local().module().toBase64());
@@ -143,7 +144,9 @@ void qUser::sendMessage(quint64 confID, const QString& msg)
 void qUser::sendPublicKeyRequest()
 {
     QByteArray baMsg;
+    quint64 cid = 0;
     baMsg.append(static_cast<char>(mtPublicKeyRequest));
+    baMsg.append((char*)cid,8);
     socket->write(baMsg);
 }
 

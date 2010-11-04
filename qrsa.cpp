@@ -46,6 +46,7 @@ QRsaKey::QRsaKey(const QRsaKey& key) : keyBits(key.keyBits)
 
 QRsaKey::QRsaKey(const QByteArray& base64key)
 {
+    qDebug() << base64key;
     keyType = rkPublic;
     valid = false;
     QList<QByteArray> keys(base64key.split(':'));

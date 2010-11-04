@@ -195,6 +195,7 @@ void qPrivateServer::incomingConnection(int socket)
         connect(s,SIGNAL(connected()),u,SLOT(connectReady()));
         connect(s,SIGNAL(disconnected()),u,SLOT(disconnected()));
         connect(s,SIGNAL(error(QAbstractSocket::SocketError)),u,SLOT(error1(QAbstractSocket::SocketError)));
+        u->sendPublicKeyRequest();
         u->connected=true;
     }
 }
