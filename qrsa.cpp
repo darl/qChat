@@ -51,11 +51,11 @@ QRsaKey::QRsaKey(const QByteArray& base64key)
     QList<QByteArray> keys(base64key.split(':'));
     if(keys.count() != 2)
         qCritical() << "invalid public key";
-
+    qDebug() <<123;
     mpz_init(e);
-    mpz_import(e, keys[0].size(), 1, sizeof(char), 0, 0, keys[0].constData());
+    mpz_import(e, QByteArray::fromBase64(keys[0]).size(), 1, 1, 0, 0, QByteArray::fromBase64(keys[0]).constData());
     mpz_init(n);
-    mpz_import(n, keys[1].size(), 1, sizeof(char), 0, 0, keys[1].constData());
+    mpz_import(n, QByteArray::fromBase64(keys[1]).size(), 1, 1, 0, 0, QByteArray::fromBase64(keys[1]).constData());
     valid = true;
 }
 

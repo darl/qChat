@@ -107,9 +107,9 @@ void qUser::processData()
         {
             QByteArray ba;
             ba.append(static_cast<char>(mtPublicKey));
-            ba.append(QRsaKey::local().publicKey());
+            ba.append(QRsaKey::local().publicKey().toBase64());
             ba.append(':');
-            ba.append(QRsaKey::local().module());
+            ba.append(QRsaKey::local().module().toBase64());
             if(socket->waitForConnected(100))
                 socket->write(ba);
         }
