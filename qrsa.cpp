@@ -46,48 +46,56 @@ QRsaKey::QRsaKey(const QRsaKey& key) : keyBits(key.keyBits)
 
 QRsaKey::QRsaKey(const QByteArray& base64key)
 {
-    qDebug() << base64key;
     keyType = rkPublic;
     valid = false;
     QList<QByteArray> keys(base64key.split(':'));
     if(keys.count() != 2)
         qCritical() << "invalid public key";
-    qDebug() <<123;
+    QByteArray a = QByteArray::fromBase64(keys[0]);
+    QByteArray b = QByteArray::fromBase64(keys[1]);
+
     mpz_init(e);
-    mpz_import(e, QByteArray::fromBase64(keys[0]).size(), 1, 1, 0, 0, QByteArray::fromBase64(keys[0]).constData());
+    mpz_import(e, a.size(), 1, 1, 0, 0, a.constData());
     mpz_init(n);
-    mpz_import(n, QByteArray::fromBase64(keys[1]).size(), 1, 1, 0, 0, QByteArray::fromBase64(keys[1]).constData());
+    mpz_import(n, b.size(), 1, 1, 0, 0, b.constData());
     valid = true;
 }
 
 QRsaKey& QRsaKey::operator=(const QRsaKey& key)
 {
-    mpz_clear(n);
-    mpz_clear(e);
-    if(keyType == rkPublicAndPrivate)
-        mpz_clear(d);
+    if(valid)
+    {
+        mpz_clear(n);
+        mpz_clear(e);
+        if(keyType == rkPublicAndPrivate)
+            mpz_clear(d);
+    }
 
     keyBits = key.keyBits;
     keyType = key.keyType;
 
-    mpz_init(n);
-    mpz_set(n, key.n);
-
-    mpz_init(e);
-    mpz_set(e, key.e);
-
-    if(keyType == rkPublicAndPrivate)
+    valid = key.valid;
+    if(valid)
     {
-        mpz_init(d);
-        mpz_set(d, key.d);
+        mpz_init(n);
+        mpz_set(n, key.n);
+
+        mpz_init(e);
+        mpz_set(e, key.e);
+
+        if(keyType == rkPublicAndPrivate)
+        {
+            mpz_init(d);
+            mpz_set(d, key.d);
+        }
     }
 
-    valid = key.valid;
     return *this;
 }
 
 QRsaKey::~QRsaKey()
 {
+    if(!valid) return;
     mpz_clear(n);
     mpz_clear(e);
     if(keyType == rkPublicAndPrivate)
@@ -225,7 +233,7 @@ QString QRsa::decrypt(const QByteArray& msg, const QRsaKey& key)
     if(key.keyType == rkPublic) return QString("no private key");
     mpz_t M;
     mpz_init(M);
-    mpz_import(M, msg.size(), 1, 1, 0, 0, msg.data());
+    mpz_import(M, msg.size(), 1, 1, 0, 0, msg.constData());
 
     mpz_t rez;
     mpz_init(rez);

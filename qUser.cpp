@@ -47,7 +47,7 @@ void qUser::processData()
     msg.remove(0,1);
 
     if(msg.size()<8) return;
-    quint64 confID = *((quint64*)(msg.data()));//magic
+    quint64 confID = *((quint64*)(msg.constData())); //magic
     msg.remove(0,8);
 
     qPrivate* w = 0;
@@ -58,13 +58,12 @@ void qUser::processData()
         if(!privateList.privateWindowExist(confID))
             sendConfInfoRequest(confID);
         w = privateList.getPrivateWindow(confID);
-        w->insertMessage(QRsa::decrypt(msg,key),true,this);
+        w->insertMessage(QRsa::decrypt(msg,QRsaKey::local()),true,this);
         w->show();
         break;
     case mtConferenceInfo:
         {
             QTextStream strm(msg);
-            qDebug() <<msg;
             QList<qUser*> ul;
             QString line;
             qUser* u;
@@ -92,7 +91,6 @@ void qUser::processData()
             {
                 new QListWidgetItem(statusIcon(u->status),u->nick,w->users);
                 u->directConnect(); //заранее подключаемся
-                //u->sendConfInfo(); //отправляем информацию о конференции
                 w->setWindowTitle(w->windowTitle()+" "+u->nick);
             }
         }
@@ -107,7 +105,7 @@ void qUser::processData()
         {
             QByteArray ba;
             ba.append(static_cast<char>(mtPublicKey));
-            ba.append(confID);
+            ba.append((char*)&confID,8);
             ba.append(QRsaKey::local().publicKey().toBase64());
             ba.append(':');
             ba.append(QRsaKey::local().module().toBase64());
@@ -146,7 +144,7 @@ void qUser::sendPublicKeyRequest()
     QByteArray baMsg;
     quint64 cid = 0;
     baMsg.append(static_cast<char>(mtPublicKeyRequest));
-    baMsg.append((char*)cid,8);
+    baMsg.append((char*)&cid,8);
     socket->write(baMsg);
 }
 
