@@ -2,7 +2,7 @@
 #define QRSA_H
 
 #include "qchat_pch.h"
-#include "gmp/include/gmp.h"
+#include "gmp.h"
 
 enum rsaKeyType {
     rkPublic,

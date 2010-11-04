@@ -39,5 +39,4 @@ PRECOMPILED_HEADER = qchat_pch.h
 FORMS += \
         qconfig.ui
 
-unix:LIBS += -L./gmp/lib -lgmp
-win32:LIBS += -L./gmp/lib/gmp.lib
+unix:LIBS += -lgmp
