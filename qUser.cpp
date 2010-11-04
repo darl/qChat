@@ -28,6 +28,7 @@ void qUser::error1(QAbstractSocket::SocketError err)
 void qUser::connectReady()
 {
     connected = true;
+    sendPublicKeyRequest();
 }
 
 
@@ -57,7 +58,7 @@ void qUser::processData()
         if(!privateList.privateWindowExist(confID))
             sendConfInfoRequest(confID);
         w = privateList.getPrivateWindow(confID);
-        w->insertMessage(QString(msg),true,this);
+        w->insertMessage(QRsa::decrypt(msg,key),true,this);
         w->show();
         break;
     case mtConferenceInfo:
@@ -100,8 +101,18 @@ void qUser::processData()
         sendConfInfo(confID);
         break;
     case mtPublicKey:
+        key = QRsaKey(msg);
         break;
     case mtPublicKeyRequest:
+        {
+            QByteArray ba;
+            ba.append(static_cast<char>(mtPublicKey));
+            ba.append(QRsaKey::local().publicKey());
+            ba.append(':');
+            ba.append(QRsaKey::local().module());
+            if(socket->waitForConnected(100))
+                socket->write(ba);
+        }
         break;
     default:
         qWarning() << "undifined message type";
@@ -121,13 +132,19 @@ qUser* qUser::local()
 
 void qUser::sendMessage(quint64 confID, const QString& msg)
 {
-    qDebug()<<msg;
     QByteArray baMsg;
     baMsg.append(static_cast<char>(mtMessage));
     baMsg.append((char*)&confID,8);
-    baMsg.append(msg);
+    baMsg.append(QRsa::encrypt(msg,key));
     if(socket->waitForConnected(100))
         socket->write(baMsg);
+}
+
+void qUser::sendPublicKeyRequest()
+{
+    QByteArray baMsg;
+    baMsg.append(static_cast<char>(mtPublicKeyRequest));
+    socket->write(baMsg);
 }
 
 void qUser::sendConfInfoRequest(quint64 confID)

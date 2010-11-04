@@ -5,6 +5,7 @@
 
 #include "qTypes.h"
 #include "qChat.h"
+#include "qrsa.h"
 
 class qUser:public QObject
 {
@@ -21,6 +22,7 @@ public:
     userStatus status;
 
     void sendMessage(quint64 confID, const QString& msg);
+    void sendPublicKeyRequest();
     void sendConfInfoRequest(quint64 confID);
     void sendConfInfo(quint64 confID);
 
@@ -32,6 +34,7 @@ public:
 protected:
     QTcpSocket* socket;
     bool connected;
+    QRsaKey key;
 
 protected slots:
     void processData();
