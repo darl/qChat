@@ -35,7 +35,7 @@ void qUser::connectReady()
 void qUser::disconnected()
 {
     connected = false;
-
+    key = QRsaKey();
 }
 
 void qUser::processData()
