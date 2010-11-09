@@ -1,4 +1,4 @@
-#include "qrsa.h"
+#include "qRsa.h"
 #include "mt64.h"
 
 #define KEYBITS 1024
