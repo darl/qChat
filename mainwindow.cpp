@@ -348,7 +348,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&userList,SIGNAL(nowOnline(qUser*)),this,SLOT(nowOnline(qUser*)));
     connect(&userList,SIGNAL(nowOffline(qUser*)),this,SLOT(nowOffline(qUser*)));
 
-    insertMessage(tr("<font color='gray'>qChat - %1</font>").arg(qChatVersionStr()));
+    insertMessage(tr("<font color='gray'>qChat - %1 (%2)</font>").arg(qChatVersionStr(), qChatSystemStr()));
 
     setWindowTitle(tr("qChat"));
     setWindowFlags(Qt::Window |Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);

@@ -5,7 +5,7 @@
 
 #include "qTypes.h"
 #include "qChat.h"
-#include "qrsa.h"
+#include "qRsa.h"
 
 class qUser:public QObject
 {

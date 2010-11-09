@@ -18,7 +18,7 @@ SOURCES += main.cpp\
         qUser.cpp \
         qChat.cpp \
         mt64.cpp \
-        qrsa.cpp
+        qRsa.cpp
 
 HEADERS += mainwindow.h \
         qChat.h \
@@ -29,7 +29,7 @@ HEADERS += mainwindow.h \
         qUser.h \
         mt64.h \
         qchat_pch.h \
-        qrsa.h
+        qRsa.h
 
 RESOURCES += \
         res.qrc

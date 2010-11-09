@@ -24,6 +24,19 @@ const char* qChatVersionStr()
     return QCHATVERSION_STR;
 }
 
+const char* qChatSystemStr()
+{
+    switch(QCHATSYSTEM)
+    {
+    case 0x00:
+        return "Windows";
+    case 0x01:
+        return "Linux";
+    default:
+        return "unknown system";
+    }
+}
+
 unsigned int qChatVersion()
 {
     return QCHATVERSION;
@@ -99,11 +112,12 @@ void qGeneralChat::processData()
             break;
         case mtOnlineWarning:
             {
-                unsigned int ver;
                 if(datagram.size() < 4) return;
-                ver = *((quint32*)datagram.constData());
+                quint32 ver = *((quint32*)datagram.constData());
                 datagram.remove(0,4);
-                qDebug() << datagram.data() << "ver: " << ver;
+                quint32 syst = ver >> 24;
+                ver &= 0xFFFFFF;
+                qDebug() << datagram.data() << "ver: " << ver << " syst: " << syst;
                 userList.updateUser(addr, datagram.data(), usrStatus);
                 sendOnlinePing();
             }

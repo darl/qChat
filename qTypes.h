@@ -9,7 +9,9 @@ enum messageType{
     mtOfflineWarning,
     mtSystemMessage,
     mtBot,
-    mtUpdateInfo,   //для автообновления в будущем
+
+    mtUpdateInfo,
+    mtUpdateRequest,
 
     mtConferenceInfo,
     mtConferenceInfoRequest,
