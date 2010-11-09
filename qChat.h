@@ -4,6 +4,12 @@
 #include "qchat_pch.h"
 #include "qTypes.h"
 #include "qUser.h"
+
+const char* qChatVersionStr();
+unsigned int qChatVersion();
+unsigned int qChatFullVersion();
+unsigned int qChatSystem();
+
 class qUser;
 
 //получение иконки из статуса

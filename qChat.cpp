@@ -7,6 +7,38 @@
 #include "qUserList.h"
 #include "qUser.h"
 
+#define QCHATVERSION_STR "0.1.0  alpha"
+
+#ifdef Q_OS_WIN32
+    #define QCHATSYSTEM 0x00
+#elif defined(Q_OS_LINUX)
+    #define QCHATSYSTEM 0x01
+#else
+    #define QCHATSYSTEM 0xFF
+#endif
+
+#define QCHATVERSION    0x000100
+
+const char* qChatVersionStr()
+{
+    return QCHATVERSION_STR;
+}
+
+unsigned int qChatVersion()
+{
+    return QCHATVERSION;
+}
+
+unsigned int qChatFullVersion()
+{
+    return (QCHATSYSTEM << 24) | (QCHATVERSION & 0xFFFFFF);
+}
+
+unsigned int qChatSystem()
+{
+    return QCHATSYSTEM;
+}
+
 /*получение иконки для статуса*/
 QString statusIconStr(userStatus status)
 {
@@ -66,8 +98,15 @@ void qGeneralChat::processData()
             sendOnlinePing();
             break;
         case mtOnlineWarning:
-            userList.updateUser(addr, datagram.data(), usrStatus);
-            sendOnlinePing();
+            {
+                unsigned int ver;
+                if(datagram.size() < 4) return;
+                ver = *((quint32*)datagram.constData());
+                datagram.remove(0,4);
+                qDebug() << datagram.data() << "ver: " << ver;
+                userList.updateUser(addr, datagram.data(), usrStatus);
+                sendOnlinePing();
+            }
             break;
         case mtOfflineWarning:
             userList.removeUser(addr);
@@ -93,7 +132,7 @@ void qGeneralChat::processData()
             break;
         default:
             emit insertMessage(tr("<font color='red'><i>Unknown message (Type: %1, status: %2): %3</i></font>")
-                               .arg(msgType).arg(usrStatus).arg(datagram.data()),true,NULL);
+                               .arg(msgType).arg(usrStatus).arg(datagram.constData()),true,NULL);
         }
     }
 }
@@ -116,17 +155,18 @@ void qGeneralChat::sendMessage(const QString& msg)
     originalMsg.replace(QRegExp("(^|[\\n])(magnet:\\?xt=.*\\&xl=(.[0-9]*)\\&dn=)(.*)"),
                         "\\1<a href=\"\\2\\4\">\\4</a>");
 
-    QByteArray dg = originalMsg.toAscii();
-    dg.insert(0,mtMessage);
-    dg.insert(1,status);
-    generalChatSocket->writeDatagram(dg,broadcast, port);
+    QByteArray dg;
+    dg.append(mtMessage);
+    dg.append(status);
+    dg.append(originalMsg);
+    generalChatSocket->writeDatagram(dg, broadcast, port);
 }
 
 void qGeneralChat::sendWhoRequest()
 {
     QByteArray dg;
-    dg.insert(0, mtWhoRequest);
-    dg.insert(1, status);
+    dg.append(mtWhoRequest);
+    dg.append(status);
     generalChatSocket->writeDatagram(dg, broadcast, port);
 }
 
@@ -134,9 +174,9 @@ void qGeneralChat::sendOnlinePing()
 {
     if(invisibleMode) return;
     QByteArray dg;
-    dg.insert(0,mtOnlinePing);
-    dg.insert(1,status);
-    dg.insert(2,nick);
+    dg.append(mtOnlinePing);
+    dg.append(status);
+    dg.append(nick);
     generalChatSocket->writeDatagram(dg,broadcast,port);
 }
 
@@ -144,9 +184,11 @@ void qGeneralChat::sendOnlineWarning()
 {
     if(invisibleMode) return;
     QByteArray dg;
-    dg.insert(0,mtOnlineWarning);
-    dg.insert(1,status);
-    dg.insert(2,nick);
+    dg.append(mtOnlineWarning);
+    dg.append(status);
+    quint32 ver = qChatFullVersion();
+    dg.append((char*)&ver, sizeof(unsigned int));
+    dg.append(nick);
     generalChatSocket->writeDatagram(dg,broadcast,port);
 }
 
@@ -154,9 +196,9 @@ void qGeneralChat::sendOfflineWarning()
 {
     if(invisibleMode) return;
     QByteArray dg;
-    dg.insert(0,mtOfflineWarning);
-    dg.insert(1,usOffline);
-    dg.insert(2,nick);
+    dg.append(mtOfflineWarning);
+    dg.append(usOffline);
+    dg.append(nick);
     generalChatSocket->writeDatagram(dg,broadcast,port);
 }
 
