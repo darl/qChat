@@ -8,7 +8,7 @@
 #include "qPrivate.h"
 #include "qConfig.h"
 #include "mt64.h"
-#include "qrsa.h"
+#include "qRsa.h"
 
 /*вставка сообщения в (QTextBrowser chatBrowser)
   на входе
@@ -230,17 +230,17 @@ void MainWindow::createUI()
 
     QToolBar* buttonBar = new QToolBar(tr("Buttons"));
     buttonBar->setObjectName("buttonBar");
-    QToolButton* refreshButton = new QToolButton();
-    refreshButton->setIcon(QIcon(":/refresh"));
+    QPushButton* refreshButton = new QPushButton(QIcon(":/refresh"), "");
+    refreshButton->setFlat(true);
     refreshButton->setFocusPolicy(Qt::NoFocus);
-    QToolButton* conferenceButton = new QToolButton();
-    conferenceButton->setIcon(QIcon(":/conference"));
+    QPushButton* conferenceButton = new QPushButton(QIcon(":/conference"), "");
+    conferenceButton->setFlat(true);
     conferenceButton->setFocusPolicy(Qt::NoFocus);
-    QToolButton* configButton = new QToolButton();
-    configButton->setIcon(QIcon(":/config"));
+    QPushButton* configButton = new QPushButton(QIcon(":/config"), "");
+    configButton->setFlat(true);
     configButton->setFocusPolicy(Qt::NoFocus);
-    QToolButton* aboutButton = new QToolButton();
-    aboutButton->setIcon(QIcon(":/about"));
+    QPushButton* aboutButton = new QPushButton(QIcon(":/about"), "");
+    aboutButton->setFlat(true);
     aboutButton->setFocusPolicy(Qt::NoFocus);
     buttonBar->addWidget(refreshButton);
     buttonBar->addWidget(conferenceButton);
