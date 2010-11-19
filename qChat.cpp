@@ -1,56 +1,10 @@
 #include "qChat.h"
 
-#include <QtGui>
-#include <QtNetwork>
-
 #include "qConfig.h"
 #include "qUserList.h"
 #include "qUser.h"
+#include "qUpdater.h"
 
-#define QCHATVERSION_STR "0.1.0  alpha"
-
-#ifdef Q_OS_WIN32
-    #define QCHATSYSTEM 0x00
-#elif defined(Q_OS_LINUX)
-    #define QCHATSYSTEM 0x01
-#else
-    #define QCHATSYSTEM 0xFF
-#endif
-
-#define QCHATVERSION    0x000100
-
-const char* qChatVersionStr()
-{
-    return QCHATVERSION_STR;
-}
-
-const char* qChatSystemStr()
-{
-    switch(QCHATSYSTEM)
-    {
-    case 0x00:
-        return "Windows";
-    case 0x01:
-        return "Linux";
-    default:
-        return "unknown system";
-    }
-}
-
-unsigned int qChatVersion()
-{
-    return QCHATVERSION;
-}
-
-unsigned int qChatFullVersion()
-{
-    return (QCHATSYSTEM << 24) | (QCHATVERSION & 0xFFFFFF);
-}
-
-unsigned int qChatSystem()
-{
-    return QCHATSYSTEM;
-}
 
 /*получение иконки для статуса*/
 QString statusIconStr(userStatus status)
@@ -200,7 +154,7 @@ void qGeneralChat::sendOnlineWarning()
     QByteArray dg;
     dg.append(mtOnlineWarning);
     dg.append(status);
-    quint32 ver = qChatFullVersion();
+    quint32 ver = qUpdater::versionFull();
     dg.append((char*)&ver, sizeof(unsigned int));
     dg.append(nick);
     generalChatSocket->writeDatagram(dg,broadcast,port);

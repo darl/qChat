@@ -5,11 +5,6 @@
 #include "qTypes.h"
 #include "qUser.h"
 
-const char* qChatVersionStr();
-const char* qChatSystemStr();
-unsigned int qChatVersion();
-unsigned int qChatFullVersion();
-unsigned int qChatSystem();
 
 class qUser;
 

@@ -1,7 +1,6 @@
 #include "qConfig.h"
 #include "ui_qConfig.h"
 
-#include "qchat_pch.h"
 
 #include "qChat.h"
 

@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 
-#include "qchat_pch.h"
-
 #include "qTypes.h"
 #include "qChat.h"
 #include "qUserList.h"
@@ -9,6 +7,7 @@
 #include "qConfig.h"
 #include "mt64.h"
 #include "qRsa.h"
+#include "qUpdater.h"
 
 /*вставка сообщения в (QTextBrowser chatBrowser)
   на входе
@@ -137,7 +136,7 @@ void MainWindow::linkClick(const QUrl& url)
 /*нажатие на иконку в трее*/
 void MainWindow::trayClick(QSystemTrayIcon::ActivationReason activationReason)
 {
-    if(activationReason==QSystemTrayIcon::Trigger) //одиночное нажатие
+    if(activationReason == QSystemTrayIcon::Trigger) //одиночное нажатие
     {
         if(!isActiveWindow() && isVisible())
         {
@@ -286,7 +285,7 @@ void MainWindow::createUI()
 void MainWindow::createTray()
 {
     systemTray = new QSystemTrayIcon(QIcon(":/chat"),this);
-    systemTray->setToolTip(tr("qChat - alpha"));
+    systemTray->setToolTip(tr("qChat"));
     systemTray->show();
 
     connect(systemTray,SIGNAL(activated(QSystemTrayIcon::ActivationReason)),this,SLOT(trayClick(QSystemTrayIcon::ActivationReason)));
@@ -348,7 +347,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&userList,SIGNAL(nowOnline(qUser*)),this,SLOT(nowOnline(qUser*)));
     connect(&userList,SIGNAL(nowOffline(qUser*)),this,SLOT(nowOffline(qUser*)));
 
-    insertMessage(tr("<font color='gray'>qChat - %1 (%2)</font>").arg(qChatVersionStr(), qChatSystemStr()));
+    insertMessage(tr("<font color='gray'>qChat - %1 (%2)</font>").arg(qUpdater::versionStr(), qUpdater::systemStr()));
 
     setWindowTitle(tr("qChat"));
     setWindowFlags(Qt::Window |Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
