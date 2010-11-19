@@ -5,7 +5,6 @@
 #include "qUser.h"
 #include "qUpdater.h"
 
-
 /*получение иконки для статуса*/
 QString statusIconStr(userStatus status)
 {
@@ -36,6 +35,15 @@ QString statusIconStr(userStatus status)
 QIcon statusIcon(userStatus status)
 {
     return QIcon(statusIconStr(status));
+}
+
+qGeneralChat* qGeneralChat::i()
+{
+    static qGeneralChat* instance = 0;
+
+    if(!instance)
+        instance = new qGeneralChat;
+    return instance;
 }
 
 /*обработка входящих пакетов*/

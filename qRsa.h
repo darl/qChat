@@ -9,21 +9,21 @@ enum rsaKeyType {
     rkPublicAndPrivate
 };
 
-class QRsaKey
+class qRsaKey
 {
-    friend class QRsa;
+    friend class qRsa;
 public:
-    QRsaKey();
-    QRsaKey(const QRsaKey& key);
-    QRsaKey(const QByteArray& base64key);
-    QRsaKey& operator= (const QRsaKey& key);
-    ~QRsaKey();
+    qRsaKey();
+    qRsaKey(const qRsaKey& key);
+    qRsaKey(const QByteArray& base64key);
+    qRsaKey& operator= (const qRsaKey& key);
+    ~qRsaKey();
 
     QByteArray privateKey();
     QByteArray publicKey();
     QByteArray module();
 
-    static QRsaKey& local();
+    static qRsaKey& local();
 private:
     bool valid;
     rsaKeyType keyType;
@@ -35,17 +35,17 @@ private:
     void generateKey();
 };
 
-class QRsa
+class qRsa
 {
 
 private:
-    QRsa() {;}
-    QRsa(const QRsa& ) {;}
-    void operator= (const QRsa& ) {;}
+    qRsa();
+    qRsa(const qRsa& );
+    void operator= (const qRsa& );
 
 public:
-    static QByteArray encrypt(const QString& msg, const QRsaKey& key);
-    static QString decrypt(const QByteArray& msg, const QRsaKey& key);
+    static QByteArray encrypt(const QString& msg, const qRsaKey& key);
+    static QString decrypt(const QByteArray& msg, const qRsaKey& key);
 };
 
 #endif // QRSA_H

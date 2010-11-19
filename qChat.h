@@ -5,7 +5,6 @@
 #include "qTypes.h"
 #include "qUser.h"
 
-
 class qUser;
 
 //получение иконки из статуса
@@ -16,7 +15,7 @@ class qGeneralChat:public QObject
     Q_OBJECT
 
 public:
-    qGeneralChat(QObject * parent = 0);
+    static qGeneralChat* i();
 
 public slots:
     void sendWhoRequest();
@@ -33,6 +32,8 @@ private slots:
     void processData();
 
 private:
+    qGeneralChat(QObject * parent = 0);
+
     QUdpSocket* generalChatSocket;
 };
 

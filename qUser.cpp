@@ -35,7 +35,7 @@ void qUser::connectReady()
 void qUser::disconnected()
 {
     connected = false;
-    key = QRsaKey();
+    key = qRsaKey();
 }
 
 void qUser::processData()
@@ -58,7 +58,7 @@ void qUser::processData()
         if(!privateList.privateWindowExist(confID))
             sendConfInfoRequest(confID);
         w = privateList.getPrivateWindow(confID);
-        w->insertMessage(QRsa::decrypt(msg,QRsaKey::local()),true,this);
+        w->insertMessage(qRsa::decrypt(msg,qRsaKey::local()),true,this);
         w->show();
         break;
     case mtConferenceInfo:
@@ -99,16 +99,16 @@ void qUser::processData()
         sendConfInfo(confID);
         break;
     case mtPublicKey:
-        key = QRsaKey(msg);
+        key = qRsaKey(msg);
         break;
     case mtPublicKeyRequest:
         {
             QByteArray ba;
             ba.append(static_cast<char>(mtPublicKey));
             ba.append((char*)&confID,8);
-            ba.append(QRsaKey::local().publicKey().toBase64());
+            ba.append(qRsaKey::local().publicKey().toBase64());
             ba.append(':');
-            ba.append(QRsaKey::local().module().toBase64());
+            ba.append(qRsaKey::local().module().toBase64());
             if(socket->waitForConnected(100))
                 socket->write(ba);
         }
@@ -133,8 +133,8 @@ void qUser::sendMessage(quint64 confID, const QString& msg)
 {
     QByteArray baMsg;
     baMsg.append(static_cast<char>(mtMessage));
-    baMsg.append((char*)&confID,8);
-    baMsg.append(QRsa::encrypt(msg,key));
+    baMsg.append((char*)&confID, 8);
+    baMsg.append(qRsa::encrypt(msg, key));
     if(socket->waitForConnected(100))
         socket->write(baMsg);
 }

@@ -34,7 +34,7 @@ public:
 protected:
     QTcpSocket* socket;
     bool connected;
-    QRsaKey key;
+    qRsaKey key;
 
 protected slots:
     void processData();

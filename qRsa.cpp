@@ -14,19 +14,19 @@ void check_for_prime(mpz_ptr p)
     };
 }
 
-QRsaKey& QRsaKey::local()
+qRsaKey& qRsaKey::local()
 {
-    static QRsaKey key;
+    static qRsaKey key;
     if(!key.valid) key.generateKey();
     return key;
 }
 
-QRsaKey::QRsaKey()
+qRsaKey::qRsaKey()
 {
     valid = false;
 }
 
-QRsaKey::QRsaKey(const QRsaKey& key) : keyBits(key.keyBits)
+qRsaKey::qRsaKey(const qRsaKey& key) : keyBits(key.keyBits)
 {
     keyType = key.keyType;
     valid = key.valid;
@@ -44,7 +44,7 @@ QRsaKey::QRsaKey(const QRsaKey& key) : keyBits(key.keyBits)
     }
 }
 
-QRsaKey::QRsaKey(const QByteArray& base64key)
+qRsaKey::qRsaKey(const QByteArray& base64key)
 {
     keyType = rkPublic;
     valid = false;
@@ -61,7 +61,7 @@ QRsaKey::QRsaKey(const QByteArray& base64key)
     valid = true;
 }
 
-QRsaKey& QRsaKey::operator=(const QRsaKey& key)
+qRsaKey& qRsaKey::operator=(const qRsaKey& key)
 {
     if(valid)
     {
@@ -93,7 +93,7 @@ QRsaKey& QRsaKey::operator=(const QRsaKey& key)
     return *this;
 }
 
-QRsaKey::~QRsaKey()
+qRsaKey::~qRsaKey()
 {
     if(!valid) return;
     mpz_clear(n);
@@ -102,7 +102,7 @@ QRsaKey::~QRsaKey()
         mpz_clear(d);
 }
 
-QByteArray QRsaKey::privateKey()
+QByteArray qRsaKey::privateKey()
 {
     if(!valid) return QByteArray("invalid key");
     if(keyType == rkPublic) return QByteArray("no private key");
@@ -111,7 +111,7 @@ QByteArray QRsaKey::privateKey()
     return QByteArray(r, rl);
 }
 
-QByteArray QRsaKey::publicKey()
+QByteArray qRsaKey::publicKey()
 {
     if(!valid) return QByteArray("invalid key");
     size_t rl = 0;
@@ -119,7 +119,7 @@ QByteArray QRsaKey::publicKey()
     return QByteArray(r, rl);
 }
 
-QByteArray QRsaKey::module()
+QByteArray qRsaKey::module()
 {
     if(!valid) return QByteArray("invalid key");
     size_t rl = 0;
@@ -127,7 +127,7 @@ QByteArray QRsaKey::module()
     return QByteArray(r, rl);
 }
 
-void QRsaKey::generateKey()
+void qRsaKey::generateKey()
 {
     mpz_t p, q;
 
@@ -203,7 +203,7 @@ void QRsaKey::generateKey()
     valid = true;
 }
 
-QByteArray QRsa::encrypt(const QString& msg, const QRsaKey& key)
+QByteArray qRsa::encrypt(const QString& msg, const qRsaKey& key)
 {
     if(!key.valid) return QByteArray("invalid key");
     mpz_t M;
@@ -227,7 +227,7 @@ QByteArray QRsa::encrypt(const QString& msg, const QRsaKey& key)
     return a;
 }
 
-QString QRsa::decrypt(const QByteArray& msg, const QRsaKey& key)
+QString qRsa::decrypt(const QByteArray& msg, const qRsaKey& key)
 {
     if(!key.valid) return QByteArray("invalid key");
     if(key.keyType == rkPublic) return QString("no private key");

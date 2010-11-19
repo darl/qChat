@@ -23,8 +23,6 @@ private:
     void loadSettings();
     void saveSettings();
 
-    qGeneralChat* general;
-
     qPrivateServer* privateServer;
 
     //список отправленных сообщений для быстрого ввода

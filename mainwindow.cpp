@@ -52,7 +52,7 @@ void MainWindow::sendClick()
     previusMessages.push_back(msgEdit->text());
     currentMessage = previusMessages.end();
 
-    general->sendMessage(msgEdit->text());
+    qGeneralChat::i()->sendMessage(msgEdit->text());
 
     msgEdit->clear();
     msgEdit->setFocus();
@@ -62,7 +62,7 @@ void MainWindow::sendClick()
 void MainWindow::refreshClick()
 {
     userList.clearOfflineUsers();
-    general->sendWhoRequest();
+    qGeneralChat::i()->sendWhoRequest();
 }
 
 /*нажатие кнопки конференция*/
@@ -178,7 +178,7 @@ void MainWindow::exitClick()
 {
     saveSettings();
 
-    general->sendOfflineWarning();
+    qGeneralChat::i()->sendOfflineWarning();
 
     systemTray->hide();
     qApp->quit();
@@ -200,21 +200,21 @@ void MainWindow::nowOffline(qUser* u)
 void MainWindow::setOnlineStatus()
 {
     status = usOnline;
-    general->sendOnlinePing();
+    qGeneralChat::i()->sendOnlinePing();
 }
 
 /*выбор статуса в меню трея*/
 void MainWindow::setAwayStatus()
 {
     status = usAway;
-    general->sendOnlinePing();
+    qGeneralChat::i()->sendOnlinePing();
 }
 
 /*выбор статуса в меню трея*/
 void MainWindow::setBusyStatus()
 {
     status = usBusy;
-    general->sendOnlinePing();
+    qGeneralChat::i()->sendOnlinePing();
 }
 
 /*построение интерфейса*/
@@ -298,7 +298,7 @@ void MainWindow::createTimers()
     QTimer* onlinePingTimer = new QTimer(this);
     QTimer* onlineCheckTimer = new QTimer(this);
 
-    connect(onlinePingTimer,SIGNAL(timeout()),general,SLOT(sendOnlinePing()));
+    connect(onlinePingTimer,SIGNAL(timeout()),qGeneralChat::i(),SLOT(sendOnlinePing()));
     connect(onlineCheckTimer,SIGNAL(timeout()),&userList,SLOT(clearOfflineUsers()));
 
     onlinePingTimer->start(5000);
@@ -338,8 +338,7 @@ MainWindow::MainWindow(QWidget *parent)
     loadSettings();
     createTray();
 
-    general = new qGeneralChat();
-    connect(general,SIGNAL(insertMessage(QString,bool,qUser*)),this,SLOT(insertMessage(QString,bool,qUser*)));
+    connect(qGeneralChat::i(),SIGNAL(insertMessage(QString,bool,qUser*)),this,SLOT(insertMessage(QString,bool,qUser*)));
     privateServer = new qPrivateServer(this);
 
     createTimers();
@@ -353,7 +352,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowFlags(Qt::Window |Qt::WindowCloseButtonHint | Qt::WindowMinimizeButtonHint);
     setWindowIcon(QIcon(":/chat"));
 
-    general->sendOnlineWarning();
+    qGeneralChat::i()->sendOnlineWarning();
 
     //инициализация генератора псевдослучайных чисел числом миллисекунд с 1970 года
     init_genrand64(QDateTime::currentDateTime().currentMSecsSinceEpoch());
