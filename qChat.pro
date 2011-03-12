@@ -19,7 +19,8 @@ SOURCES += main.cpp\
         qChat.cpp \
         mt64.cpp \
         qRsa.cpp \
-    qUpdater.cpp
+    qUpdater.cpp \
+    qAes.cpp
 
 HEADERS += mainwindow.h \
         qChat.h \
@@ -31,7 +32,8 @@ HEADERS += mainwindow.h \
         mt64.h \
         qchat_pch.h \
         qRsa.h \
-    qUpdater.h
+    qUpdater.h \
+    qAes.h
 
 RESOURCES += \
         res.qrc
