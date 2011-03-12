@@ -16,12 +16,12 @@ QUserListModel::QUserListModel(QObject *parent) :
 
 Qt::ItemFlags QUserListModel::flags ( const QModelIndex & /*index*/ ) const
 {
-    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    return (Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 }
 
 QVariant QUserListModel::data ( const QModelIndex & index, int role) const
 {
-    int r=index.row();
+    int r = index.row();
     QHash<QString, qUser*>::iterator i(userList.begin());
     i+=r;
     qUser* u = *i;

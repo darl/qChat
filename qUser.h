@@ -40,6 +40,6 @@ protected slots:
     void processData();
     void connectReady();
     void disconnected();
-    void error1(QAbstractSocket::SocketError);
+    void error(QAbstractSocket::SocketError);
 };
 #endif // QUSER_H

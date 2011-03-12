@@ -15,13 +15,13 @@ qUser::qUser(QObject *obj): QObject(obj)
     connect(socket,SIGNAL(readyRead()),this,SLOT(processData()));
     connect(socket,SIGNAL(connected()),this,SLOT(connectReady()));
     connect(socket,SIGNAL(disconnected()),this,SLOT(disconnected()));
-    connect(socket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(error1(QAbstractSocket::SocketError)));
+    connect(socket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(error(QAbstractSocket::SocketError)));
 
 }
 
-void qUser::error1(QAbstractSocket::SocketError err)
+void qUser::error(QAbstractSocket::SocketError err)
 {
-    qDebug() << "error1 " << err;
+    qDebug() << err;
 }
 
 
@@ -71,7 +71,7 @@ void qUser::processData()
             do {
                 line = strm.readLine();
                 u = userList[line];
-                if(!u) continue;    //на всякий случай
+                if(!u) continue;
 
                 if(la.contains(u->address)) //найден локальный пользователь
                     continue;

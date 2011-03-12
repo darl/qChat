@@ -37,15 +37,14 @@ private:
 
 class qRsa
 {
-
-private:
-    qRsa();
-    qRsa(const qRsa& );
-    void operator= (const qRsa& );
-
 public:
     static QByteArray encrypt(const QString& msg, const qRsaKey& key);
     static QString decrypt(const QByteArray& msg, const qRsaKey& key);
+
+private:
+    qRsa();
+    qRsa(const qRsa&);
+    void operator= (const qRsa&);
 };
 
 #endif // QRSA_H
